@@ -1,32 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Dashboard</title>
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>NodeMAPS</h2>
+<h2>Dashboard</h2>
+<button onclick="createProject()">New Project</button>
 
-  <button>🏠 Home</button>
-  <button>📁 My Projects</button>
-  <button>👥 Shared</button>
-  <button>🔑 Join Code</button>
-  <button>⭐ Starred</button>
-  <button>⚙ Settings</button>
-</div>
-
-<div class="main">
-
-  <div class="topbar">
-    <input id="search" placeholder="Search projects...">
-    <button onclick="createProject()">+ New Project</button>
-  </div>
-
-  <div id="projects"></div>
-
-</div>
+<div id="projects"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
@@ -41,17 +23,18 @@ auth.onAuthStateChanged(user => {
 });
 
 function createProject(){
+  const user = auth.currentUser;
+  if(!user) return alert("Not logged in");
+
   const id = "p_" + Date.now();
 
   db.collection("projects").doc(id).set({
     name: "Untitled Project",
-    owner: auth.currentUser.uid,
-    members: [auth.currentUser.uid],
+    owner: user.uid,
+    members: [user.uid],
     createdAt: Date.now(),
     state: {nodes: [], edges: []}
   });
-
-  loadProjects(auth.currentUser.uid);
 }
 
 function loadProjects(uid){
@@ -62,12 +45,9 @@ function loadProjects(uid){
     let html = "";
 
     snap.forEach(doc => {
-      const p = doc.data();
-
       html += `
-        <div class="card" onclick="openProject('${doc.id}')">
-          <h3>${p.name}</h3>
-          <p>Members: ${p.members.length}</p>
+        <div onclick="openProject('${doc.id}')">
+          ${doc.data().name}
         </div>
       `;
     });

@@ -10,8 +10,6 @@ const firebaseConfig = {
 // INIT
 firebase.initializeApp(firebaseConfig);
 
-// AUTH
-const auth = firebase.auth();
-
-// 🔥 ADD THIS (IMPORTANT)
-const db = firebase.firestore();
+// GLOBAL ACCESS
+window.auth = firebase.auth();
+window.db = firebase.firestore();

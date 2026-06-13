@@ -1,80 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS Dashboard</title>
-  <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      background:#f4f6fb;
-    }
+<title>NodeMAPS Dashboard</title>
 
-    .topbar{
-      background:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid #ddd;
-    }
-
-    .container{
-      padding:20px;
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap:20px;
-    }
-
-    .card{
-      background:white;
-      border-radius:14px;
-      padding:15px;
-      box-shadow:0 5px 20px rgba(0,0,0,0.08);
-      cursor:pointer;
-      transition:0.2s;
-    }
-
-    .card:hover{
-      transform:scale(1.03);
-    }
-
-    .new-box{
-      background:linear-gradient(135deg,#4f63ff,#6c7bff);
-      color:white;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      font-size:20px;
-    }
-
-    button{
-      padding:10px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-    }
-
-    .logout{
-      background:red;
-      color:white;
-    }
-  </style>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+<!-- TOP BAR (YOUR STYLE ONLY) -->
 <div class="topbar">
-  <h2>NodeMAPS</h2>
-  <button class="logout" onclick="logout()">Logout</button>
+<h2>NodeMAPS</h2>
+<button onclick="logout()">Logout</button>
 </div>
 
-<div class="container">
+<!-- MAIN AREA -->
+<div id="projects"></div>
 
-  <!-- CREATE NEW PROJECT BOX -->
-  <div class="card new-box" onclick="createProject()">
-    + Create New Project
-  </div>
+<!-- ACTION PANEL (NO NEW DESIGN SYSTEM) -->
+<div>
+<button onclick="createProject()">+ New Project</button>
 
+<input id="joinCode" placeholder="Enter Code">
+<button onclick="joinProject()">Join</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -86,57 +34,65 @@
 <script>
 
 auth.onAuthStateChanged(user=>{
-  if(!user) window.location.href="login.html";
-  loadProjects();
+if(!user) window.location.href="login.html";
+loadProjects();
 });
 
 function createProject(){
-  let id = "p_" + Date.now();
+let id = "p_" + Date.now();
 
-  db.collection("projects").doc(id).set({
-    name:"Untitled Project",
-    owner:auth.currentUser.uid,
-    members:[auth.currentUser.uid],
-    createdAt:Date.now()
-  }).then(()=>{
-    openProject(id);
-  });
+db.collection("projects").doc(id).set({
+name:"Untitled Project",
+owner:auth.currentUser.uid,
+members:[auth.currentUser.uid],
+createdAt:Date.now()
+});
+
+openProject(id);
 }
 
 function loadProjects(){
-  db.collection("projects")
-  .where("members","array-contains",auth.currentUser.uid)
-  .onSnapshot(snap=>{
+db.collection("projects")
+.where("members","array-contains",auth.currentUser.uid)
+.onSnapshot(snap=>{
 
-    document.querySelectorAll(".project-card").forEach(e=>e.remove());
+document.getElementById("projects").innerHTML="";
 
-    snap.forEach(doc=>{
-      let d = doc.data();
+snap.forEach(doc=>{
+let div=document.createElement("div");
+div.className="project";
+div.innerHTML=doc.data().name;
 
-      let div = document.createElement("div");
-      div.className="card project-card";
-      div.innerHTML=`
-        <h3>${d.name}</h3>
-        <small>Project ID: ${doc.id}</small>
-      `;
+div.onclick=()=>openProject(doc.id);
 
-      div.onclick=()=>openProject(doc.id);
+document.getElementById("projects").appendChild(div);
+});
 
-      document.querySelector(".container").appendChild(div);
-    });
-
-  });
+});
 }
 
 function openProject(id){
-  localStorage.setItem("projectId",id);
-  window.location.href="editor.html";
+localStorage.setItem("projectId",id);
+window.location.href="editor.html";
+}
+
+function joinProject(){
+let code=document.getElementById("joinCode").value;
+
+db.collection("projects").doc(code).get().then(doc=>{
+if(doc.exists){
+db.collection("projects").doc(code).update({
+members:firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
+});
+openProject(code);
+}else{
+alert("Invalid Code");
+}
+});
 }
 
 function logout(){
-  auth.signOut().then(()=>{
-    window.location.href="login.html";
-  });
+auth.signOut().then(()=>window.location.href="login.html");
 }
 
 </script>

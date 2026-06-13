@@ -9,155 +9,154 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family: Inter, Arial, sans-serif;
+      font-family: Arial, sans-serif;
     }
 
     body{
-      height:100vh;
       display:flex;
-      background: radial-gradient(circle at top left, #eef2ff, #f8fafc, #ffffff);
-      overflow:hidden;
+      height:100vh;
+      background:#f6f7fb;
     }
 
-    /* SIDEBAR (FIGMA STYLE DARK PREMIUM) */
+    /* SIDEBAR */
     .sidebar{
-      width:280px;
-      background: rgba(17,24,39,0.95);
-      backdrop-filter: blur(12px);
+      width:260px;
+      background:#111827;
       color:white;
-      padding:20px;
+      padding:18px;
       display:flex;
       flex-direction:column;
-      gap:14px;
-      border-right:1px solid rgba(255,255,255,0.08);
+      gap:12px;
     }
 
     .logo{
       font-size:20px;
       font-weight:700;
-      letter-spacing:0.5px;
-      margin-bottom:10px;
-    }
-
-    .nav{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:10px;
     }
 
     .nav-item{
-      padding:12px 12px;
-      border-radius:12px;
+      padding:10px;
+      border-radius:10px;
       cursor:pointer;
       color:#cbd5e1;
-      transition:0.2s;
-      font-size:14px;
     }
 
     .nav-item:hover{
       background:rgba(255,255,255,0.08);
       color:white;
-      transform:translateX(3px);
+    }
+
+    input{
+      padding:10px;
+      border-radius:8px;
+      border:none;
+      outline:none;
+    }
+
+    .btn{
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .primary{
+      background:#1a73e8;
+      color:white;
     }
 
     /* MAIN */
     .main{
       flex:1;
-      padding:30px;
+      padding:20px;
       overflow:auto;
     }
 
-    .header{
-      margin-bottom:25px;
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:15px;
     }
 
     .title{
-      font-size:28px;
-      font-weight:700;
-      color:#111827;
+      font-size:22px;
+      font-weight:600;
     }
 
-    .subtitle{
-      color:#6b7280;
-      margin-top:6px;
+    /* SEARCH */
+    .search{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      margin-bottom:15px;
     }
 
-    /* CREATE SECTION */
-    .cards{
-      display:flex;
-      gap:16px;
-      flex-wrap:wrap;
-      margin-bottom:30px;
-    }
-
-    .card{
-      width:180px;
-      height:160px;
-      border-radius:18px;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(10px);
-      border:1px solid rgba(0,0,0,0.06);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      cursor:pointer;
-      transition:0.25s ease;
-      box-shadow:0 10px 30px rgba(0,0,0,0.05);
-    }
-
-    .card:hover{
-      transform:translateY(-6px) scale(1.02);
-      box-shadow:0 18px 40px rgba(0,0,0,0.12);
-      border-color:#4f8cff;
-    }
-
-    .plus{
-      font-size:44px;
-      color:#2563eb;
-      font-weight:300;
-    }
-
-    .label{
-      margin-top:8px;
-      font-size:14px;
-      color:#374151;
-      font-weight:500;
-    }
-
-    /* RECENT LIST (ULTRA POLISHED) */
-    .list{
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      border:1px solid rgba(0,0,0,0.06);
-      border-radius:18px;
-      overflow:hidden;
-      box-shadow:0 12px 30px rgba(0,0,0,0.06);
-    }
-
-    .row{
+    /* PROJECT ITEM */
+    .project{
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:12px;
+      margin-bottom:10px;
       display:flex;
       justify-content:space-between;
-      padding:16px 18px;
-      cursor:pointer;
-      transition:0.2s;
-      border-bottom:1px solid rgba(0,0,0,0.04);
+      align-items:center;
     }
 
-    .row:hover{
-      background:#f3f7ff;
-      transform:scale(1.01);
+    .left{
+      flex:1;
+      cursor:pointer;
     }
 
     .name{
-      font-weight:500;
-      color:#111827;
+      font-weight:600;
     }
 
     .meta{
+      font-size:12px;
       color:#6b7280;
+      margin-top:4px;
+    }
+
+    /* 3 DOT MENU */
+    .menu{
+      position:relative;
+    }
+
+    .dots{
+      cursor:pointer;
+      font-size:18px;
+      padding:6px;
+    }
+
+    .dropdown{
+      position:absolute;
+      right:0;
+      top:25px;
+      background:white;
+      border:1px solid #ddd;
+      border-radius:10px;
+      display:none;
+      min-width:140px;
+      box-shadow:0 10px 20px rgba(0,0,0,0.1);
+      z-index:10;
+    }
+
+    .dropdown div{
+      padding:10px;
+      cursor:pointer;
       font-size:13px;
+    }
+
+    .dropdown div:hover{
+      background:#f3f4f6;
+    }
+
+    .star{
+      color:gold;
     }
 
   </style>
@@ -169,44 +168,25 @@
 <div class="sidebar">
   <div class="logo">NodeMAPS</div>
 
-  <div class="nav">
-    <div class="nav-item">🏠 Home</div>
-    <div class="nav-item">⭐ Favorites</div>
-    <div class="nav-item">🗂 My Maps</div>
-    <div class="nav-item">🗑 Trash</div>
-  </div>
+  <input id="joinCode" placeholder="Join code">
+  <button class="btn primary" onclick="joinProject()">Join</button>
+
+  <div class="nav-item" onclick="filterMode='all';load()">🏠 All</div>
+  <div class="nav-item" onclick="filterMode='starred';load()">⭐ Starred</div>
+  <div class="nav-item" onclick="filterMode='shared';load()">👥 Shared</div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <div class="header">
-    <div class="title">Welcome back 👋</div>
-    <div class="subtitle">Create, organize and explore your mind maps</div>
+  <div class="topbar">
+    <div class="title">My Projects</div>
+    <button class="btn primary" onclick="createProject()">+ New</button>
   </div>
 
-  <!-- CREATE CARDS -->
-  <div class="cards">
+  <input class="search" placeholder="Search projects..." oninput="search(this.value)">
 
-    <div class="card" onclick="createProject()">
-      <div class="plus">+</div>
-      <div class="label">Blank Map</div>
-    </div>
-
-    <div class="card">
-      <div style="font-size:30px;">🧠</div>
-      <div class="label">Mind Map</div>
-    </div>
-
-    <div class="card">
-      <div style="font-size:30px;">🏗</div>
-      <div class="label">Org Chart</div>
-    </div>
-
-  </div>
-
-  <!-- RECENT -->
-  <div class="list" id="list"></div>
+  <div id="list"></div>
 
 </div>
 
@@ -218,47 +198,156 @@
 
 <script>
 
+let filterMode="all";
+let allProjects=[];
+
 auth.onAuthStateChanged(user=>{
   if(!user) window.location.href="login.html";
   load();
 });
 
+/* CREATE */
 function createProject(){
   let id="p_"+Date.now();
 
   db.collection("projects").doc(id).set({
-    name:"Untitled Map",
+    name:"Untitled Project",
     owner:auth.currentUser.uid,
     members:[auth.currentUser.uid],
-    createdAt:Date.now()
+    starred:false,
+    folder:"root",
+    sharedWith:[],
+    createdAt:Date.now(),
+    updatedAt:Date.now()
   }).then(()=>{
     openProject(id);
   });
 }
 
+/* LOAD */
 function load(){
   db.collection("projects")
   .where("members","array-contains",auth.currentUser.uid)
   .onSnapshot(snap=>{
 
-    let html="";
+    allProjects = [];
 
     snap.forEach(doc=>{
       let d=doc.data();
-
-      html+=`
-        <div class="row" onclick="openProject('${doc.id}')">
-          <div class="name">${d.name}</div>
-          <div class="meta">me</div>
-        </div>
-      `;
+      d.id=doc.id;
+      allProjects.push(d);
     });
 
-    document.getElementById("list").innerHTML = html;
+    render(allProjects);
 
   });
 }
 
+/* RENDER */
+function render(list){
+
+  let html="";
+
+  list.forEach(p=>{
+
+    if(filterMode==="starred" && !p.starred) return;
+    if(filterMode==="shared" && (!p.sharedWith || p.sharedWith.length===0)) return;
+
+    let created = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-";
+
+    html+=`
+      <div class="project">
+
+        <div class="left" onclick="openProject('${p.id}')">
+          <div class="name">
+            ${p.starred ? "⭐ " : ""}${p.name}
+          </div>
+          <div class="meta">Created: ${created}</div>
+        </div>
+
+        <div class="menu">
+          <div class="dots" onclick="toggleMenu(event,'${p.id}')">⋮</div>
+
+          <div class="dropdown" id="menu-${p.id}">
+            <div onclick="rename(event,'${p.id}')">Rename</div>
+            <div onclick="toggleStar(event,'${p.id}')">Star</div>
+            <div onclick="deleteProject(event,'${p.id}')">Delete</div>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+/* MENU */
+function toggleMenu(e,id){
+  e.stopPropagation();
+
+  document.querySelectorAll(".dropdown").forEach(d=>d.style.display="none");
+
+  let menu=document.getElementById("menu-"+id);
+  menu.style.display = menu.style.display==="block"?"none":"block";
+}
+
+/* STAR */
+function toggleStar(e,id){
+  e.stopPropagation();
+
+  let p = allProjects.find(x=>x.id===id);
+
+  db.collection("projects").doc(id).update({
+    starred: !p.starred,
+    updatedAt:Date.now()
+  });
+}
+
+/* RENAME */
+function rename(e,id){
+  e.stopPropagation();
+
+  let name=prompt("Rename:");
+  if(!name) return;
+
+  db.collection("projects").doc(id).update({
+    name,
+    updatedAt:Date.now()
+  });
+}
+
+/* DELETE */
+function deleteProject(e,id){
+  e.stopPropagation();
+
+  if(!confirm("Delete?")) return;
+
+  db.collection("projects").doc(id).delete();
+}
+
+/* SEARCH */
+function search(val){
+  let filtered = allProjects.filter(p =>
+    p.name.toLowerCase().includes(val.toLowerCase())
+  );
+
+  render(filtered);
+}
+
+/* JOIN */
+function joinProject(){
+  let code=document.getElementById("joinCode").value;
+
+  db.collection("projects").doc(code).update({
+    sharedWith: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
+  });
+
+  openProject(code);
+}
+
+/* OPEN */
 function openProject(id){
   window.location.href="editor.html?id="+id;
 }

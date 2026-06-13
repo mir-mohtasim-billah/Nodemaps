@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title>NodeMAPS Dashboard</title>
 </head>
 <body>
 
 <h2>Dashboard</h2>
-<button onclick="createProject()">New Project</button>
+<button onclick="createProject()">+ New Project</button>
 
 <div id="projects"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<!-- Firebase COMPAT -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
@@ -33,7 +34,7 @@ function createProject(){
     owner: user.uid,
     members: [user.uid],
     createdAt: Date.now(),
-    state: {}
+    state: { nodes: [], edges: [] }
   });
 }
 
@@ -45,9 +46,11 @@ function loadProjects(uid){
     let html = "";
 
     snap.forEach(doc => {
-      html += `<div onclick="openProject('${doc.id}')">
-        ${doc.data().name}
-      </div>`;
+      html += `
+        <div onclick="openProject('${doc.id}')">
+          <h3>${doc.data().name}</h3>
+        </div>
+      `;
     });
 
     document.getElementById("projects").innerHTML = html;

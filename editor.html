@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS Editor</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Editor</title>
 </head>
 <body>
 
-<h3>Editor</h3>
-<div id="canvas"></div>
+<h2>Editor</h2>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
@@ -20,26 +18,12 @@ const projectId = localStorage.getItem("projectId");
 
 auth.onAuthStateChanged(user => {
   if(!user) window.location.href = "login.html";
-  listenProject();
-});
 
-function listenProject(){
   db.collection("projects").doc(projectId)
   .onSnapshot(doc => {
-    const data = doc.data();
-    render(data.state);
+    console.log(doc.data());
   });
-}
-
-function saveState(state){
-  db.collection("projects").doc(projectId).update({
-    state: state
-  });
-}
-
-function render(state){
-  console.log("Render mindmap here:", state);
-}
+});
 </script>
 
 </body>

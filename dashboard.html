@@ -24,7 +24,7 @@ auth.onAuthStateChanged(user => {
 
 function createProject(){
   const user = auth.currentUser;
-  if(!user) return alert("Not logged in");
+  if(!user) return;
 
   const id = "p_" + Date.now();
 
@@ -33,7 +33,7 @@ function createProject(){
     owner: user.uid,
     members: [user.uid],
     createdAt: Date.now(),
-    state: {nodes: [], edges: []}
+    state: {}
   });
 }
 
@@ -45,11 +45,9 @@ function loadProjects(uid){
     let html = "";
 
     snap.forEach(doc => {
-      html += `
-        <div onclick="openProject('${doc.id}')">
-          ${doc.data().name}
-        </div>
-      `;
+      html += `<div onclick="openProject('${doc.id}')">
+        ${doc.data().name}
+      </div>`;
     });
 
     document.getElementById("projects").innerHTML = html;

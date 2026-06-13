@@ -2,17 +2,22 @@
 <html>
 <head>
   <title>NodeMAPS Login</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="center">
   <h1>NodeMAPS</h1>
+  <p>Made by MIRethos Group</p>
+
   <button onclick="login()">Login with Google</button>
 </div>
 
+<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 
+<!-- Your Firebase Config -->
 <script src="firebase-config.js"></script>
 
 <script>
@@ -20,10 +25,13 @@ function login(){
   const provider = new firebase.auth.GoogleAuthProvider();
 
   auth.signInWithPopup(provider)
-  .then(() => {
-    window.location.href = "dashboard.html";
-  })
-  .catch(err => console.log(err));
+    .then((result) => {
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      console.log("Login Error:", error);
+      alert("Login failed!");
+    });
 }
 </script>
 

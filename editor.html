@@ -34,7 +34,49 @@
 .collab-empty{border:1px dashed var(--border);border-radius:14px;padding:14px;color:var(--muted);font-size:14px;background:#fafafa}
 .collab-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:#fff}
 @media(max-width:760px){.collab-grid{grid-template-columns:1fr}.collab-modal{width:calc(100vw - 20px)}.collab-card-top{display:grid}.collab-code{font-size:17px}}
-</style></head><body>
+</style>
+<style id="inspector-topbar-fix">
+/* FIX: keep right inspector below the wrapped top toolbar */
+:root{--inspector-top-safe:132px;}
+.inspector{
+  top:var(--inspector-top-safe)!important;
+  max-height:calc(100vh - var(--inspector-top-safe) - 16px)!important;
+  z-index:90!important;
+}
+@media(max-width:1100px){
+  .inspector{
+    top:var(--inspector-top-safe)!important;
+    bottom:auto!important;
+    width:min(310px,calc(100vw - 28px))!important;
+    max-height:calc(100vh - var(--inspector-top-safe) - 16px)!important;
+  }
+}
+</style>
+<script id="inspector-topbar-measure-fix">
+(function(){
+  function fixInspectorPosition(){
+    var topbar=document.querySelector('.topbar');
+    if(!topbar) return;
+    var r=topbar.getBoundingClientRect();
+    var top=Math.ceil(r.bottom+12);
+    document.documentElement.style.setProperty('--inspector-top-safe', top+'px');
+  }
+  fixInspectorPosition();
+  window.addEventListener('load', fixInspectorPosition);
+  window.addEventListener('resize', fixInspectorPosition);
+  setTimeout(fixInspectorPosition, 300);
+  setTimeout(fixInspectorPosition, 1000);
+  var oldRender=window.render;
+  if(typeof oldRender==='function'){
+    window.render=function(){
+      var out=oldRender.apply(this,arguments);
+      fixInspectorPosition();
+      return out;
+    };
+  }
+})();
+</script>
+</head><body>
 <div class="topbar"><div class="brand">NodeMap</div><button id="addRootBtn">Add Root</button><button id="addChildBtn">Add Child</button><button id="addTextBtn">Text</button><button id="connectBtn">Connect</button><div class="divider"></div><div class="menu-wrap"><button id="editMenuBtn">Edit ▾</button><div id="editMenu" class="dropdown"><button id="copyBtn">Copy</button><button id="pasteBtn">Paste</button><button id="duplicateBtn">Duplicate</button><button id="deleteBtn" class="danger">Delete</button><div class="sep"></div><button id="lockMenuBtn">Lock / Unlock</button><button id="collapseMenuBtn">Collapse / Expand</button></div></div><div class="menu-wrap"><button id="arrangeMenuBtn">Arrange ▾</button><div id="arrangeMenu" class="dropdown"><button id="groupBtn">Group</button><button id="ungroupBtn">Ungroup</button><div class="sep"></div><button id="alignLeftBtn">Align Left</button><button id="alignCenterBtn">Align Center</button><button id="alignRightBtn">Align Right</button><button id="alignTopBtn">Align Top</button><button id="alignMiddleBtn">Align Middle</button><button id="alignBottomBtn">Align Bottom</button><div class="sep"></div><button id="distHBtn">Distribute Horizontal</button><button id="distVBtn">Distribute Vertical</button><div class="sep"></div><button id="snapBtn">Snap to Grid</button></div></div><div class="divider"></div><button id="undoBtn">Undo</button><button id="redoBtn">Redo</button><div class="search"><input id="searchInput" type="text" placeholder="Search node..."><button id="searchNextBtn">Find</button><button id="searchClearBtn">×</button></div><div class="divider"></div><button id="zoomOutBtn">−</button><div class="zoom-pill" id="zoomLabel">100%</div><button id="zoomInBtn">+</button><button id="fitBtn">Fit</button><div class="spacer"></div><button id="autoLayoutBtn">Auto Layout</button><button id="addUserBtn">Add User</button><div class="menu-wrap"><button id="fileMenuBtn">File ▾</button><div id="fileMenu" class="dropdown"><button id="newMapBtn">New Map</button><button id="saveEditableBtn">Save Editable File (.json)</button><button id="viewJsonBtn">View Project JSON Code</button><button id="openEditableBtn">Open Editable File (.json)</button><button id="importOutlineBtn">Import from Text Outline</button><div class="sep"></div><button id="exportPngBtn">Export PNG</button><button id="exportPdfBtn">Export PDF</button><div class="sep"></div><button id="clearAutosaveBtn">Cloud Save Status</button></div></div><button id="helpBtn">Help</button><button id="presentBtn">Present</button><input id="loadFile" class="file-input" type="file" accept="application/json"></div>
 <div id="viewport" class="viewport"><div id="world" class="world"><svg id="svg" class="lines"></svg><div id="nodesLayer"></div></div></div>
 <aside id="inspector" class="inspector"><div class="inspector-header"><div><div class="inspector-title" id="inspectorTitle">Style</div><div class="inspector-subtitle" id="inspectorSubtitle">Select a node or line</div></div><button id="closeInspectorBtn">×</button></div><div class="inspector-body" id="nodePanel"><div class="field"><label>Text</label><textarea id="nodeText"></textarea></div><div class="field-row"><div class="field"><label>Icon / Emoji</label><input type="text" id="nodeIcon" maxlength="4" placeholder="e.g. 💡"></div><div class="field"><label>Shape</label><select id="shapeSelect"><option value="rounded">Rounded Box</option><option value="rectangle">Rectangle</option><option value="pill">Oval Box</option><option value="circle">Circle</option><option value="oval">Oval</option><option value="diamond">Decision</option><option value="triangle">Triangle</option><option value="parallelogram">Input / Data</option><option value="trapezoid">Trapezoid</option><option value="hexagon">Hexagon</option><option value="document">Document</option><option value="text">Text Only</option></select></div></div><div class="emoji-row" id="emojiRow"><button data-emoji="">None</button><button data-emoji="💡">💡</button><button data-emoji="✅">✅</button><button data-emoji="⭐">⭐</button><button data-emoji="📌">📌</button><button data-emoji="⚠️">⚠️</button><button data-emoji="📚">📚</button><button data-emoji="💰">💰</button><button data-emoji="🚀">🚀</button></div><div class="field-row"><div class="field"><label>Fill</label><div class="color-input"><input type="color" id="nodeColor" value="#ffffff"><span id="nodeColorText">#ffffff</span></div></div><div class="field"><label>Border</label><div class="color-input"><input type="color" id="borderColor" value="#9aa7ff"><span id="borderColorText">#9aa7ff</span></div></div></div><div class="field"><label>Font Size</label><div class="range-wrap"><input type="range" id="fontSize" min="12" max="60" value="16"><span id="fontSizeText">16</span></div></div><div class="field"><label>Size</label><div class="size-grid"><input type="number" id="nodeWidth" min="40" max="1200" placeholder="Width"><input type="number" id="nodeHeight" min="24" max="800" placeholder="Height"></div><button id="resetSizeBtn">Reset Shape Size</button></div><div class="field-row"><div class="field"><label>Text Color</label><div class="color-input"><input type="color" id="textColor" value="#111827"><span id="textColorText">#111827</span></div></div><div class="field"><label>Font</label><select id="textFont" class="font-select"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Tahoma">Tahoma</option><option value="Trebuchet MS">Trebuchet MS</option><option value="Courier New">Courier New</option><option value="Comic Sans MS">Comic Sans MS</option><option value="Impact">Impact</option></select></div></div><div class="field"><label>Node Note / Details</label><textarea id="nodeNote" placeholder="Add details, reminders, links, or explanation here..."></textarea></div><div class="field"><label>Branch Color Theme</label><div class="field-row"><div class="color-input"><input type="color" id="branchColor" value="#e8ecff"><span id="branchColorText">#e8ecff</span></div><button id="applyBranchColorBtn">Apply Branch</button></div></div><div class="inspector-actions"><button id="lockBtn">Lock</button><button id="collapseBtn">Collapse</button><button id="duplicateBtnPanel">Duplicate</button><button id="deleteBtnPanel" class="danger">Delete</button></div></div><div class="inspector-body" id="linePanel" style="display:none"><div class="field"><label>Line Type</label><select id="lineTypeSelect"><option value="curve">Flexible Curve</option><option value="straight">Straight Line</option><option value="elbow">Elbow Line</option></select></div><div class="field"><label>Line Color</label><div class="color-input"><input type="color" id="lineColor" value="#68738a"><span id="lineColorText">#68738a</span></div></div><div class="inspector-actions"><button id="deleteLineBtn" class="danger">Delete Line</button></div></div><div class="inspector-body" id="multiPanel" style="display:none"><div class="field"><label>Multi-selected nodes</label><div id="multiInfo" style="font-size:14px;color:#4b5563"></div></div><div class="inspector-actions"><button id="multiGroupBtn">Group</button><button id="multiUngroupBtn">Ungroup</button><button id="multiCopyBtn">Copy</button><button id="multiDeleteBtn" class="danger">Delete</button></div></div></aside>

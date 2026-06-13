@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Editor</title>
+  <title>NodeMAPS Editor</title>
 </head>
 <body>
 
 <h2>Editor</h2>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<div id="canvas"></div>
+
+<!-- Firebase COMPAT -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
@@ -18,12 +21,29 @@ const projectId = localStorage.getItem("projectId");
 
 auth.onAuthStateChanged(user => {
   if(!user) window.location.href = "login.html";
+  listenProject();
+});
+
+function listenProject(){
+  if(!projectId) return;
 
   db.collection("projects").doc(projectId)
   .onSnapshot(doc => {
-    console.log(doc.data());
+    console.log("Project data:", doc.data());
+    render(doc.data().state);
   });
-});
+}
+
+function saveState(state){
+  db.collection("projects").doc(projectId).update({
+    state: state
+  });
+}
+
+function render(state){
+  document.getElementById("canvas").innerHTML =
+    "<pre>" + JSON.stringify(state, null, 2) + "</pre>";
+}
 </script>
 
 </body>

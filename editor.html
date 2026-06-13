@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NodeMAPS Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<h3>Editor</h3>
+<div id="canvas"></div>
+
+<script src="firebase-config.js"></script>
+
+<script>
+const projectId = localStorage.getItem("projectId");
+
+auth.onAuthStateChanged(user => {
+  if(!user) window.location.href = "login.html";
+  listenProject();
+});
+
+function listenProject(){
+  db.collection("projects").doc(projectId)
+  .onSnapshot(doc => {
+    const data = doc.data();
+    render(data.state);
+  });
+}
+
+function saveState(state){
+  db.collection("projects").doc(projectId).update({
+    state: state
+  });
+}
+
+function render(state){
+  console.log("Render mindmap here:", state);
+}
+</script>
+
+</body>
+</html>

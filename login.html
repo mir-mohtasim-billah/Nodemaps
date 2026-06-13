@@ -1,16 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login NodeMAPS</title>
-</head>
-<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial;background:#f4f6fb">
+<title>NodeMAPS Login</title>
 
-<div style="background:white;padding:30px;border-radius:12px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.1)">
-  <h2>NodeMAPS</h2>
-  <p>Login to continue</p>
-  <button onclick="login()" style="padding:10px 20px;border:none;background:#4f63ff;color:white;border-radius:8px">
-    Login with Google
-  </button>
+<style>
+:root{
+--bg:#f6f7fb;
+--primary:#4f63ff;
+--text:#111827;
+--muted:#6b7280;
+--shadow:0 12px 32px rgba(15,23,42,.13);
+}
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:var(--bg);
+font-family:Arial;
+}
+
+.box{
+width:320px;
+background:white;
+padding:40px;
+border-radius:18px;
+box-shadow:var(--shadow);
+text-align:center;
+}
+
+h1{
+margin:0;
+color:var(--text);
+}
+
+p{
+color:var(--muted);
+margin-bottom:20px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:var(--primary);
+color:white;
+cursor:pointer;
+font-size:15px;
+}
+
+button:hover{
+opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h1>NodeMAPS</h1>
+<p>Mind Map Workspace</p>
+<button onclick="login()">Login with Google</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -19,11 +72,11 @@
 
 <script>
 function login(){
-  let provider = new firebase.auth.GoogleAuthProvider();
+let provider = new firebase.auth.GoogleAuthProvider();
 
-  auth.signInWithPopup(provider).then(()=>{
-    window.location.href="dashboard.html";
-  });
+auth.signInWithPopup(provider).then(()=>{
+window.location.href="dashboard.html";
+});
 }
 </script>
 

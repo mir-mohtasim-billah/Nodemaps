@@ -22,19 +22,36 @@
 
     /* SIDEBAR */
     .sidebar{
-      width:260px;
-      background:#111827;
+      width:280px;
+      background:linear-gradient(180deg,#0f172a 0%, #0b1328 100%);
       color:white;
       padding:20px 18px;
       display:flex;
       flex-direction:column;
       gap:18px;
+      border-right:1px solid rgba(255,255,255,0.05);
     }
 
-    .logo{
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:4px 2px 10px 2px;
+    }
+
+    .brand img{
+      width:40px;
+      height:40px;
+      object-fit:contain;
+      border-radius:10px;
+      flex-shrink:0;
+    }
+
+    .brand-name{
       font-size:22px;
       font-weight:700;
       letter-spacing:.2px;
+      color:#ffffff;
     }
 
     .nav{
@@ -44,35 +61,36 @@
     }
 
     .nav-item{
-      padding:11px 12px;
-      border-radius:11px;
-      color:#cbd5e1;
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dbe3f1;
       cursor:pointer;
       font-size:15px;
       display:flex;
       align-items:center;
-      gap:9px;
+      gap:10px;
       transition:.18s;
     }
 
     .nav-item:hover,
     .nav-item.active{
-      background:#1f2937;
-      color:white;
+      background:rgba(255,255,255,0.09);
+      color:#ffffff;
     }
 
     .join-box{
       display:flex;
       flex-direction:column;
-      gap:8px;
+      gap:10px;
+      margin-top:4px;
     }
 
     .join-box input{
       border:none;
       outline:none;
-      padding:11px 12px;
-      border-radius:10px;
-      background:#f9fafb;
+      padding:12px 14px;
+      border-radius:12px;
+      background:#f8fafc;
       color:#111827;
       font-size:14px;
     }
@@ -81,10 +99,10 @@
       border:none;
       outline:none;
       cursor:pointer;
-      border-radius:10px;
-      padding:10px 12px;
+      border-radius:12px;
+      padding:11px 14px;
       font-weight:600;
-      font-size:14px;
+      font-size:15px;
       transition:.18s;
     }
 
@@ -101,33 +119,35 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      color:#9ca3af;
+      color:#9fb0c8;
       font-size:12px;
       text-transform:uppercase;
-      letter-spacing:.5px;
-      margin-top:4px;
+      letter-spacing:.7px;
+      margin-top:2px;
     }
 
     .folder-add{
       background:transparent;
-      color:#cbd5e1;
+      color:#dbe3f1;
       border:none;
       cursor:pointer;
-      font-size:18px;
+      font-size:22px;
+      line-height:1;
     }
 
     .folders{
       display:flex;
       flex-direction:column;
       gap:6px;
-      max-height:190px;
+      max-height:220px;
       overflow:auto;
+      padding-right:4px;
     }
 
     .folder-item{
-      padding:9px 10px;
+      padding:10px 12px;
       border-radius:10px;
-      color:#cbd5e1;
+      color:#dbe3f1;
       cursor:pointer;
       font-size:14px;
       display:flex;
@@ -138,8 +158,8 @@
 
     .folder-item:hover,
     .folder-item.active{
-      background:#1f2937;
-      color:white;
+      background:rgba(255,255,255,0.09);
+      color:#ffffff;
     }
 
     .sidebar-footer{
@@ -149,28 +169,28 @@
     }
 
     .user-small{
-      font-size:12px;
-      color:#9ca3af;
-      margin-bottom:8px;
+      font-size:13px;
+      color:#b6c2d3;
+      margin-bottom:10px;
       word-break:break-all;
     }
 
     .logout-btn{
       width:100%;
-      background:#1f2937;
+      background:rgba(255,255,255,0.07);
       color:white;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,0.08);
     }
 
     .logout-btn:hover{
-      background:#374151;
+      background:rgba(255,255,255,0.12);
     }
 
     /* MAIN */
     .main{
       flex:1;
       overflow:auto;
-      padding:34px 34px 70px;
+      padding:30px 30px 60px;
     }
 
     .top-row{
@@ -193,37 +213,20 @@
       font-size:16px;
     }
 
-    .top-actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .top-logout{
-      background:white;
-      color:#374151;
-      border:1px solid #e5e7eb;
-      box-shadow:0 8px 18px rgba(0,0,0,.04);
-    }
-
-    .top-logout:hover{
-      background:#f9fafb;
-    }
-
-    /* TEMPLATE CARDS */
+    /* TEMPLATE SECTION */
     .cards{
       display:flex;
       gap:18px;
       flex-wrap:wrap;
-      margin-bottom:32px;
+      margin-bottom:34px;
     }
 
     .card{
-      width:190px;
-      height:155px;
+      width:205px;
+      height:165px;
       background:white;
       border:1px solid #e5e7eb;
-      border-radius:16px;
+      border-radius:18px;
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -241,18 +244,20 @@
 
     .card-icon{
       font-size:36px;
-      margin-bottom:13px;
+      margin-bottom:14px;
+      line-height:1;
     }
 
     .plus{
       color:#2563eb;
-      font-size:42px;
+      font-size:44px;
       font-weight:300;
     }
 
     .card span{
-      font-size:15px;
+      font-size:16px;
       color:#374151;
+      font-weight:500;
     }
 
     /* SEARCH + SECTION */
@@ -262,21 +267,22 @@
       align-items:center;
       gap:16px;
       margin-bottom:14px;
+      flex-wrap:wrap;
     }
 
     .section-title{
-      font-size:17px;
+      font-size:18px;
       font-weight:700;
       color:#111827;
     }
 
     .search{
-      width:330px;
+      width:360px;
       max-width:100%;
       border:1px solid #e5e7eb;
       background:white;
-      padding:11px 14px;
-      border-radius:12px;
+      padding:12px 14px;
+      border-radius:14px;
       outline:none;
       font-size:14px;
       box-shadow:0 8px 18px rgba(0,0,0,.03);
@@ -290,30 +296,31 @@
     .project-list{
       background:white;
       border:1px solid #e5e7eb;
-      border-radius:16px;
+      border-radius:18px;
       overflow:visible;
       box-shadow:0 18px 38px rgba(0,0,0,.06);
     }
 
     .table-head{
       display:grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      grid-template-columns: 2.3fr 0.8fr 1fr 1fr 50px;
       gap:12px;
-      padding:14px 20px;
+      padding:16px 20px;
       color:#6b7280;
       font-size:13px;
-      border-bottom:1px solid #f1f3f5;
+      border-bottom:1px solid #eef2f7;
       background:#fbfcff;
-      border-radius:16px 16px 0 0;
+      border-radius:18px 18px 0 0;
+      font-weight:600;
     }
 
     .project-row{
       display:grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      grid-template-columns: 2.3fr 0.8fr 1fr 1fr 50px;
       gap:12px;
       align-items:center;
       padding:16px 20px;
-      border-bottom:1px solid #f1f3f5;
+      border-bottom:1px solid #eef2f7;
       transition:.16s;
       position:relative;
     }
@@ -335,9 +342,9 @@
     }
 
     .doc-icon{
-      width:30px;
-      height:30px;
-      border-radius:8px;
+      width:32px;
+      height:32px;
+      border-radius:10px;
       background:#eaf2ff;
       color:#2563eb;
       display:flex;
@@ -352,27 +359,28 @@
     }
 
     .name-text{
-      font-weight:600;
+      font-weight:700;
       color:#111827;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:360px;
+      max-width:420px;
+      font-size:15px;
     }
 
     .code-text{
-      color:#9ca3af;
+      color:#94a3b8;
       font-size:12px;
-      margin-top:3px;
+      margin-top:4px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:360px;
+      max-width:420px;
     }
 
     .cell{
       color:#6b7280;
-      font-size:13px;
+      font-size:14px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -413,7 +421,7 @@
       position:absolute;
       right:0;
       top:38px;
-      width:190px;
+      width:200px;
       background:white;
       border:1px solid #e5e7eb;
       border-radius:12px;
@@ -445,15 +453,25 @@
     }
 
     .empty{
-      padding:30px;
+      padding:34px;
       color:#6b7280;
       text-align:center;
       font-size:14px;
     }
 
+    @media(max-width:1024px){
+      .table-head{
+        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      }
+
+      .project-row{
+        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      }
+    }
+
     @media(max-width:900px){
       .sidebar{
-        width:220px;
+        width:235px;
       }
 
       .table-head{
@@ -466,11 +484,6 @@
 
       .cell{
         display:none;
-      }
-
-      .toolbar{
-        align-items:flex-start;
-        flex-direction:column;
       }
 
       .search{
@@ -493,13 +506,18 @@
         padding:22px;
       }
 
-      .cards{
-        gap:12px;
-      }
-
       .card{
         width:100%;
         height:130px;
+      }
+
+      .brand img{
+        width:34px;
+        height:34px;
+      }
+
+      .brand-name{
+        font-size:20px;
       }
     }
   </style>
@@ -508,7 +526,10 @@
 <body>
 
   <aside class="sidebar">
-    <div class="logo">NodeMAPS</div>
+    <div class="brand">
+      <img src="logo.png" alt="NodeMAPS Logo">
+      <div class="brand-name">NodeMAPS</div>
+    </div>
 
     <div class="nav" id="mainNav"></div>
 
@@ -535,10 +556,6 @@
       <div class="welcome">
         <h1>Welcome back 👋</h1>
         <p>Create, organize and explore your mind maps</p>
-      </div>
-
-      <div class="top-actions">
-        <button class="btn top-logout" onclick="logout()">Logout</button>
       </div>
     </div>
 
@@ -746,8 +763,8 @@ function renderProjects(){
   filtered.forEach(project => {
     const ownerText = project.owner === currentUser.uid ? "me" : "shared";
     const folderName = getFolderName(project.folder || "root");
-    const updated = formatDate(project.updatedAt || project.createdAt);
-    const created = formatDate(project.createdAt);
+    const updated = formatDateOnly(project.updatedAt || project.createdAt);
+    const created = formatDateOnly(project.createdAt);
     const projectName = project.name || "Untitled Project";
 
     html += `
@@ -1057,7 +1074,7 @@ function getFolderName(folderId){
   return folder ? folder.name : "Unknown";
 }
 
-function formatDate(timestamp){
+function formatDateOnly(timestamp){
   if (!timestamp) return "-";
 
   return new Date(timestamp).toLocaleDateString(undefined, {

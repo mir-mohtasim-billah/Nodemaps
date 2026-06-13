@@ -13,45 +13,40 @@
     }
 
     body{
-      height:100vh;
+      min-height:100vh;
       display:flex;
       background:#f5f7fb;
       color:#111827;
-      overflow:hidden;
     }
 
-    /* SIDEBAR */
     .sidebar{
       width:280px;
-      background:linear-gradient(180deg,#0f172a 0%, #0b1328 100%);
+      background:linear-gradient(180deg,#0f172a,#0b1328);
       color:white;
-      padding:20px 18px;
+      padding:22px 18px;
       display:flex;
       flex-direction:column;
       gap:18px;
-      border-right:1px solid rgba(255,255,255,0.05);
+      flex-shrink:0;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
-      padding:4px 2px 10px 2px;
+      gap:14px;
+      padding-bottom:12px;
     }
 
     .brand img{
-      width:40px;
-      height:40px;
+      width:42px;
+      height:42px;
       object-fit:contain;
-      border-radius:10px;
-      flex-shrink:0;
     }
 
     .brand-name{
       font-size:22px;
       font-weight:700;
-      letter-spacing:.2px;
-      color:#ffffff;
+      letter-spacing:.5px;
     }
 
     .nav{
@@ -74,18 +69,18 @@
 
     .nav-item:hover,
     .nav-item.active{
-      background:rgba(255,255,255,0.09);
-      color:#ffffff;
+      background:rgba(255,255,255,.10);
+      color:white;
     }
 
     .join-box{
       display:flex;
       flex-direction:column;
       gap:10px;
-      margin-top:4px;
     }
 
     .join-box input{
+      width:100%;
       border:none;
       outline:none;
       padding:12px 14px;
@@ -101,7 +96,7 @@
       cursor:pointer;
       border-radius:12px;
       padding:11px 14px;
-      font-weight:600;
+      font-weight:700;
       font-size:15px;
       transition:.18s;
     }
@@ -123,7 +118,6 @@
       font-size:12px;
       text-transform:uppercase;
       letter-spacing:.7px;
-      margin-top:2px;
     }
 
     .folder-add{
@@ -158,13 +152,13 @@
 
     .folder-item:hover,
     .folder-item.active{
-      background:rgba(255,255,255,0.09);
-      color:#ffffff;
+      background:rgba(255,255,255,.10);
+      color:white;
     }
 
     .sidebar-footer{
       margin-top:auto;
-      border-top:1px solid rgba(255,255,255,.08);
+      border-top:1px solid rgba(255,255,255,.10);
       padding-top:14px;
     }
 
@@ -177,34 +171,30 @@
 
     .logout-btn{
       width:100%;
-      background:rgba(255,255,255,0.07);
+      background:rgba(255,255,255,.07);
       color:white;
-      border:1px solid rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,.10);
     }
 
     .logout-btn:hover{
-      background:rgba(255,255,255,0.12);
+      background:rgba(255,255,255,.13);
     }
 
-    /* MAIN */
     .main{
       flex:1;
+      padding:30px;
       overflow:auto;
-      padding:30px 30px 60px;
+      min-width:0;
     }
 
-    .top-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:18px;
+    .welcome{
       margin-bottom:24px;
     }
 
     .welcome h1{
       font-size:30px;
       margin-bottom:8px;
-      font-weight:700;
+      font-weight:800;
       color:#111827;
     }
 
@@ -213,7 +203,6 @@
       font-size:16px;
     }
 
-    /* TEMPLATE SECTION */
     .cards{
       display:flex;
       gap:18px;
@@ -250,17 +239,16 @@
 
     .plus{
       color:#2563eb;
-      font-size:44px;
+      font-size:46px;
       font-weight:300;
     }
 
     .card span{
       font-size:16px;
       color:#374151;
-      font-weight:500;
+      font-weight:600;
     }
 
-    /* SEARCH + SECTION */
     .toolbar{
       display:flex;
       justify-content:space-between;
@@ -272,7 +260,7 @@
 
     .section-title{
       font-size:18px;
-      font-weight:700;
+      font-weight:800;
       color:#111827;
     }
 
@@ -292,7 +280,6 @@
       border-color:#93c5fd;
     }
 
-    /* PROJECT LIST */
     .project-list{
       background:white;
       border:1px solid #e5e7eb;
@@ -303,7 +290,7 @@
 
     .table-head{
       display:grid;
-      grid-template-columns: 2.3fr 0.8fr 1fr 1fr 50px;
+      grid-template-columns:2.3fr .8fr 1fr 1fr 50px;
       gap:12px;
       padding:16px 20px;
       color:#6b7280;
@@ -311,12 +298,12 @@
       border-bottom:1px solid #eef2f7;
       background:#fbfcff;
       border-radius:18px 18px 0 0;
-      font-weight:600;
+      font-weight:700;
     }
 
     .project-row{
       display:grid;
-      grid-template-columns: 2.3fr 0.8fr 1fr 1fr 50px;
+      grid-template-columns:2.3fr .8fr 1fr 1fr 50px;
       gap:12px;
       align-items:center;
       padding:16px 20px;
@@ -359,7 +346,7 @@
     }
 
     .name-text{
-      font-weight:700;
+      font-weight:800;
       color:#111827;
       white-space:nowrap;
       overflow:hidden;
@@ -459,56 +446,22 @@
       font-size:14px;
     }
 
-    @media(max-width:1024px){
-      .table-head{
-        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
-      }
-
-      .project-row{
-        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
-      }
-    }
-
     @media(max-width:900px){
-      .sidebar{
-        width:235px;
-      }
-
-      .table-head{
-        display:none;
-      }
-
-      .project-row{
-        grid-template-columns:1fr 45px;
-      }
-
-      .cell{
-        display:none;
-      }
-
-      .search{
-        width:100%;
-      }
-    }
-
-    @media(max-width:650px){
       body{
-        flex-direction:column;
+        display:block;
+        min-height:100vh;
         overflow:auto;
       }
 
       .sidebar{
         width:100%;
         min-height:auto;
+        padding:18px;
+        gap:16px;
       }
 
-      .main{
-        padding:22px;
-      }
-
-      .card{
-        width:100%;
-        height:130px;
+      .brand{
+        padding-bottom:4px;
       }
 
       .brand img{
@@ -517,7 +470,109 @@
       }
 
       .brand-name{
+        font-size:22px;
+      }
+
+      .nav{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+      }
+
+      .nav-item{
+        padding:11px 12px;
+        font-size:14px;
+      }
+
+      .join-box{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+
+      .folders{
+        max-height:none;
+      }
+
+      .sidebar-footer{
+        margin-top:0;
+      }
+
+      .main{
+        padding:18px;
+        overflow:visible;
+      }
+
+      .welcome h1{
+        font-size:25px;
+      }
+
+      .welcome p{
+        font-size:14px;
+      }
+
+      .cards{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:12px;
+        margin-bottom:22px;
+      }
+
+      .card{
+        width:100%;
+        height:120px;
+        border-radius:18px;
+      }
+
+      .toolbar{
+        align-items:stretch;
+      }
+
+      .search{
+        width:100%;
+      }
+
+      .table-head{
+        display:none;
+      }
+
+      .project-row{
+        grid-template-columns:1fr 42px;
+        padding:14px;
+      }
+
+      .cell{
+        display:none;
+      }
+
+      .name-text{
+        max-width:calc(100vw - 130px);
+      }
+
+      .code-text{
+        max-width:calc(100vw - 130px);
+      }
+
+      .dropdown{
+        right:0;
+        width:190px;
+      }
+    }
+
+    @media(max-width:430px){
+      .sidebar{
+        padding:16px;
+      }
+
+      .nav{
+        grid-template-columns:1fr;
+      }
+
+      .brand-name{
         font-size:20px;
+      }
+
+      .main{
+        padding:14px;
       }
     }
   </style>
@@ -525,79 +580,76 @@
 
 <body>
 
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="logo.png" alt="NodeMAPS Logo">
-      <div class="brand-name">NodeMAPS</div>
+<aside class="sidebar">
+  <div class="brand">
+    <img src="logo.png" alt="NodeMAPS Logo">
+    <div class="brand-name">NodeMAPS</div>
+  </div>
+
+  <div class="nav" id="mainNav"></div>
+
+  <div class="join-box">
+    <input id="joinCode" placeholder="Enter 6 digit invite code or project ID">
+    <button class="btn btn-primary" onclick="joinProject()">Join Project</button>
+  </div>
+
+  <div class="folder-title">
+    <span>Folders</span>
+    <button class="folder-add" onclick="createFolder()" title="Create folder">+</button>
+  </div>
+
+  <div class="folders" id="foldersList"></div>
+
+  <div class="sidebar-footer">
+    <div class="user-small" id="userEmail">Signed in</div>
+    <button class="btn logout-btn" onclick="logout()">Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="welcome">
+    <h1>Welcome back 👋</h1>
+    <p>Create, organize and explore your mind maps</p>
+  </div>
+
+  <div class="cards">
+    <div class="card" onclick="createProject('blank')">
+      <div class="card-icon plus">+</div>
+      <span>Blank Map</span>
     </div>
 
-    <div class="nav" id="mainNav"></div>
-
-    <div class="join-box">
-      <input id="joinCode" placeholder="Enter project code">
-      <button class="btn btn-primary" onclick="joinProject()">Join Project</button>
+    <div class="card" onclick="createProject('mindmap')">
+      <div class="card-icon">🧠</div>
+      <span>Mind Map</span>
     </div>
 
-    <div class="folder-title">
-      <span>Folders</span>
-      <button class="folder-add" onclick="createFolder()" title="Create folder">+</button>
+    <div class="card" onclick="createProject('orgchart')">
+      <div class="card-icon">🏗️</div>
+      <span>Org Chart</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="section-title" id="viewTitle">My Maps</div>
+    <input class="search" id="searchInput" placeholder="Search projects..." oninput="setSearch(this.value)">
+  </div>
+
+  <div class="project-list">
+    <div class="table-head">
+      <div>Name</div>
+      <div>Owner</div>
+      <div>Folder</div>
+      <div>Updated</div>
+      <div></div>
     </div>
 
-    <div class="folders" id="foldersList"></div>
-
-    <div class="sidebar-footer">
-      <div class="user-small" id="userEmail">Signed in</div>
-      <button class="btn logout-btn" onclick="logout()">Logout</button>
-    </div>
-  </aside>
-
-  <main class="main">
-    <div class="top-row">
-      <div class="welcome">
-        <h1>Welcome back 👋</h1>
-        <p>Create, organize and explore your mind maps</p>
-      </div>
-    </div>
-
-    <div class="cards">
-      <div class="card" onclick="createProject('blank')">
-        <div class="card-icon plus">+</div>
-        <span>Blank Map</span>
-      </div>
-
-      <div class="card" onclick="createProject('mindmap')">
-        <div class="card-icon">🧠</div>
-        <span>Mind Map</span>
-      </div>
-
-      <div class="card" onclick="createProject('orgchart')">
-        <div class="card-icon">🏗️</div>
-        <span>Org Chart</span>
-      </div>
-    </div>
-
-    <div class="toolbar">
-      <div class="section-title" id="viewTitle">My Maps</div>
-      <input class="search" id="searchInput" placeholder="Search projects..." oninput="setSearch(this.value)">
-    </div>
-
-    <div class="project-list">
-      <div class="table-head">
-        <div>Name</div>
-        <div>Owner</div>
-        <div>Folder</div>
-        <div>Updated</div>
-        <div></div>
-      </div>
-
-      <div id="projects"></div>
-    </div>
-  </main>
+    <div id="projects"></div>
+  </div>
+</main>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
 <script src="firebase-config.js"></script>
 
 <script>
@@ -617,7 +669,8 @@ auth.onAuthStateChanged(user => {
   }
 
   currentUser = user;
-  document.getElementById("userEmail").textContent = user.email || user.displayName || "Signed in";
+  document.getElementById("userEmail").textContent =
+    user.email || user.displayName || "Signed in";
 
   renderMainNav();
   loadProjects();
@@ -699,13 +752,14 @@ function loadProjects(){
         allProjects.push(data);
       });
 
-      allProjects.sort((a,b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
+      allProjects.sort((a,b) =>
+        (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0)
+      );
 
       renderProjects();
     }, error => {
-      document.getElementById("projects").innerHTML = `
-        <div class="empty">Failed to load projects: ${escapeHTML(error.message)}</div>
-      `;
+      document.getElementById("projects").innerHTML =
+        `<div class="empty">Failed to load projects: ${escapeHTML(error.message)}</div>`;
     });
 }
 
@@ -724,19 +778,24 @@ function loadFolders(){
       });
 
       allFolders.sort((a,b) => (a.name || "").localeCompare(b.name || ""));
-
       renderFolders();
     }, error => {
       console.log("Folder load failed:", error.message);
+      allFolders = [];
+      renderFolders();
     });
 }
 
 function renderProjects(){
   let filtered = allProjects.filter(project => {
     const deleted = project.deleted === true;
-    const ownerIsMe = project.owner === currentUser.uid;
+    const ownerIsMe =
+      project.owner === currentUser.uid ||
+      project.ownerUid === currentUser.uid ||
+      project.createdBy === currentUser.uid;
+
     const folder = project.folder || "root";
-    const name = (project.name || "Untitled Project").toLowerCase();
+    const name = (project.name || project.title || "Untitled Project").toLowerCase();
 
     if (searchText && !name.includes(searchText)) return false;
 
@@ -752,20 +811,24 @@ function renderProjects(){
   updateViewTitle();
 
   if (filtered.length === 0) {
-    document.getElementById("projects").innerHTML = `
-      <div class="empty">No projects found</div>
-    `;
+    document.getElementById("projects").innerHTML =
+      `<div class="empty">No projects found</div>`;
     return;
   }
 
   let html = "";
 
   filtered.forEach(project => {
-    const ownerText = project.owner === currentUser.uid ? "me" : "shared";
+    const ownerText = (
+      project.owner === currentUser.uid ||
+      project.ownerUid === currentUser.uid ||
+      project.createdBy === currentUser.uid
+    ) ? "me" : "shared";
+
     const folderName = getFolderName(project.folder || "root");
     const updated = formatDateOnly(project.updatedAt || project.createdAt);
     const created = formatDateOnly(project.createdAt);
-    const projectName = project.name || "Untitled Project";
+    const projectName = project.name || project.title || "Untitled Project";
 
     html += `
       <div class="project-row">
@@ -803,7 +866,7 @@ function renderProjects(){
                   ${project.starred ? "☆ Unstar" : "⭐ Star"}
                 </div>
                 <div class="menu-option" onclick="moveToFolder(event, '${project.id}')">📁 Move to folder</div>
-                <div class="menu-option" onclick="copyProjectCode(event, '${project.id}')">🔗 Copy share code</div>
+                <div class="menu-option" onclick="copyProjectCode(event, '${project.id}')">🔗 Copy project ID</div>
                 <div class="menu-option menu-danger" onclick="moveToTrash(event, '${project.id}')">🗑️ Move to trash</div>
               `
             }
@@ -836,11 +899,23 @@ function createProject(type){
 
   db.collection("projects").doc(id).set({
     name: name,
+    title: name,
     type: type || "blank",
     owner: currentUser.uid,
+    ownerUid: currentUser.uid,
+    createdBy: currentUser.uid,
     ownerEmail: currentUser.email || "",
     members: [currentUser.uid],
     sharedWith: [],
+    roles: {
+      [currentUser.uid]: "owner"
+    },
+    memberProfiles: {
+      [currentUser.uid]: profileFromCurrentUser()
+    },
+    dashboardAccess: {
+      [currentUser.uid]: true
+    },
     starred: false,
     folder: "root",
     deleted: false,
@@ -888,7 +963,9 @@ function moveToFolder(event, projectId){
     return;
   }
 
-  let existing = allFolders.find(f => (f.name || "").toLowerCase() === cleanName.toLowerCase());
+  let existing = allFolders.find(f =>
+    (f.name || "").toLowerCase() === cleanName.toLowerCase()
+  );
 
   if (existing) {
     db.collection("projects").doc(projectId).update({
@@ -920,14 +997,15 @@ function renameProject(event, projectId){
   event.stopPropagation();
 
   const project = allProjects.find(p => p.id === projectId);
-  const oldName = project ? project.name : "";
+  const oldName = project ? (project.name || project.title || "Untitled Project") : "Untitled Project";
 
-  const newName = prompt("Rename project:", oldName || "Untitled Project");
+  const newName = prompt("Rename project:", oldName);
 
   if (!newName || !newName.trim()) return;
 
   db.collection("projects").doc(projectId).update({
     name: newName.trim(),
+    title: newName.trim(),
     updatedAt: Date.now()
   }).catch(error => {
     alert("Rename failed: " + error.message);
@@ -987,53 +1065,147 @@ function copyProjectCode(event, projectId){
 
   if (navigator.clipboard) {
     navigator.clipboard.writeText(projectId).then(() => {
-      alert("Project code copied. Send this code to someone so they can join.");
+      alert("Project ID copied.");
     }).catch(() => {
-      prompt("Copy this project code:", projectId);
+      prompt("Copy this project ID:", projectId);
     });
   } else {
-    prompt("Copy this project code:", projectId);
+    prompt("Copy this project ID:", projectId);
   }
 }
 
-function joinProject(){
-  const code = document.getElementById("joinCode").value.trim();
+/* FIXED JOIN:
+   1) If user enters 6 digit invite code, read inviteCodes/{code}
+   2) Add user to projects/{projectId}
+   3) Apply role from invite code
+   4) Open editor.html?id=projectId
+   5) If not invite code, fallback to direct project ID
+*/
+async function joinProject(){
+  const input = document.getElementById("joinCode").value.trim();
 
-  if (!code) {
-    alert("Please enter project code");
+  if (!input) {
+    alert("Please enter invite code or project ID");
     return;
   }
 
-  const ref = db.collection("projects").doc(code);
-
-  ref.get().then(doc => {
-    if (!doc.exists) {
-      alert("Invalid project code");
+  try {
+    if (/^\d{6}$/.test(input)) {
+      await joinByInviteCode(input);
       return;
     }
 
-    const data = doc.data();
+    await joinByProjectId(input);
 
-    if (data.deleted === true) {
-      alert("This project is in trash");
-      return;
-    }
-
-    const updateData = {
-      members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
-      updatedAt: Date.now()
-    };
-
-    if (data.owner !== currentUser.uid) {
-      updateData.sharedWith = firebase.firestore.FieldValue.arrayUnion(currentUser.uid);
-    }
-
-    return ref.update(updateData).then(() => {
-      openProject(code);
-    });
-  }).catch(error => {
+  } catch (error) {
+    console.error(error);
     alert("Join failed: " + error.message);
-  });
+  }
+}
+
+async function joinByInviteCode(code){
+  const inviteDoc = await db.collection("inviteCodes").doc(code).get();
+
+  if (!inviteDoc.exists) {
+    alert("Invalid invite code");
+    return;
+  }
+
+  const invite = inviteDoc.data();
+
+  if (invite.active === false) {
+    alert("This invite code is inactive");
+    return;
+  }
+
+  if (invite.expiresAt && Date.now() > invite.expiresAt) {
+    alert("This invite code has expired");
+    return;
+  }
+
+  const used = invite.used || 0;
+  const maxUses = invite.maxUses || 1;
+
+  if (used >= maxUses) {
+    alert("This invite code is already used");
+    return;
+  }
+
+  if (!invite.projectId) {
+    alert("Invite code has no project ID");
+    return;
+  }
+
+  const projectRef = db.collection("projects").doc(invite.projectId);
+  const projectDoc = await projectRef.get();
+
+  if (!projectDoc.exists) {
+    alert("Project not found");
+    return;
+  }
+
+  const project = projectDoc.data();
+
+  if (project.deleted === true) {
+    alert("This project is in trash");
+    return;
+  }
+
+  const role = invite.role || "viewer";
+
+  const updateData = {
+    members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+    sharedWith: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+    updatedAt: Date.now()
+  };
+
+  updateData["roles." + currentUser.uid] = role;
+  updateData["memberProfiles." + currentUser.uid] = profileFromCurrentUser();
+
+  if (invite.dashboardAccess !== false) {
+    updateData["dashboardAccess." + currentUser.uid] = true;
+  }
+
+  await projectRef.set(updateData, { merge:true });
+
+  await db.collection("inviteCodes").doc(code).set({
+    used: firebase.firestore.FieldValue.increment(1),
+    usedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+    lastUsedAt: Date.now()
+  }, { merge:true });
+
+  openProject(invite.projectId);
+}
+
+async function joinByProjectId(projectId){
+  const projectRef = db.collection("projects").doc(projectId);
+  const projectDoc = await projectRef.get();
+
+  if (!projectDoc.exists) {
+    alert("Invalid project ID");
+    return;
+  }
+
+  const data = projectDoc.data();
+
+  if (data.deleted === true) {
+    alert("This project is in trash");
+    return;
+  }
+
+  const updateData = {
+    members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+    sharedWith: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+    updatedAt: Date.now()
+  };
+
+  updateData["roles." + currentUser.uid] = "editor";
+  updateData["memberProfiles." + currentUser.uid] = profileFromCurrentUser();
+  updateData["dashboardAccess." + currentUser.uid] = true;
+
+  await projectRef.set(updateData, { merge:true });
+
+  openProject(projectId);
 }
 
 function openProject(projectId){
@@ -1082,6 +1254,15 @@ function formatDateOnly(timestamp){
     month: "short",
     day: "numeric"
   });
+}
+
+function profileFromCurrentUser(){
+  return {
+    uid: currentUser.uid,
+    name: currentUser.displayName || currentUser.email || "User",
+    email: currentUser.email || "",
+    updatedAt: Date.now()
+  };
 }
 
 function escapeHTML(text){

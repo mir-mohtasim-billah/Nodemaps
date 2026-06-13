@@ -8,30 +8,26 @@
 <h1>NodeMAPS</h1>
 <button onclick="login()">Login with Google</button>
 
-<!-- Firebase -->
+<!-- Firebase CDN (IMPORTANT ORDER) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
 
+<!-- Config -->
 <script src="firebase-config.js"></script>
 
 <script>
 function login(){
 
-  // 🔥 FIX IMPORTANT LINE
-  if(!firebase || !firebase.auth){
-    alert("Firebase not loaded!");
-    return;
-  }
-
   const provider = new firebase.auth.GoogleAuthProvider();
 
   auth.signInWithPopup(provider)
-    .then(() => {
+    .then((result) => {
       window.location.href = "dashboard.html";
     })
     .catch((error) => {
       console.log(error);
-      alert("Login failed: " + error.message);
+      alert(error.message);
     });
 }
 </script>

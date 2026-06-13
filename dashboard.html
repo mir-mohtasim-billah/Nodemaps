@@ -1,29 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NodeMAPS Dashboard</title>
-
-<link rel="stylesheet" href="style.css">
+  <title>Dashboard</title>
 </head>
-
 <body>
 
-<!-- TOP BAR (YOUR STYLE ONLY) -->
-<div class="topbar">
-<h2>NodeMAPS</h2>
-<button onclick="logout()">Logout</button>
-</div>
+<h2>NodeMAPS Dashboard</h2>
 
-<!-- MAIN AREA -->
-<div id="projects"></div>
-
-<!-- ACTION PANEL (NO NEW DESIGN SYSTEM) -->
-<div>
 <button onclick="createProject()">+ New Project</button>
 
-<input id="joinCode" placeholder="Enter Code">
+<br><br>
+
+<input id="joinCode" placeholder="Enter Project Code">
 <button onclick="joinProject()">Join</button>
-</div>
+
+<br><br>
+
+<button onclick="logout()">Logout</button>
+
+<div id="projects"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -34,65 +29,74 @@
 <script>
 
 auth.onAuthStateChanged(user=>{
-if(!user) window.location.href="login.html";
-loadProjects();
+  if(!user) window.location.href="login.html";
+  loadProjects();
 });
 
 function createProject(){
-let id = "p_" + Date.now();
+  let id = "p_" + Date.now();
 
-db.collection("projects").doc(id).set({
-name:"Untitled Project",
-owner:auth.currentUser.uid,
-members:[auth.currentUser.uid],
-createdAt:Date.now()
-});
+  db.collection("projects").doc(id).set({
+    name:"New Project",
+    owner:auth.currentUser.uid,
+    members:[auth.currentUser.uid],
+    users:{
+      [auth.currentUser.uid]:{
+        name:auth.currentUser.displayName,
+        role:"owner",
+        online:true
+      }
+    },
+    createdAt:Date.now()
+  });
 
-openProject(id);
+  openProject(id);
 }
 
 function loadProjects(){
-db.collection("projects")
-.where("members","array-contains",auth.currentUser.uid)
-.onSnapshot(snap=>{
+  db.collection("projects")
+  .where("members","array-contains",auth.currentUser.uid)
+  .onSnapshot(snap=>{
 
-document.getElementById("projects").innerHTML="";
+    let html="";
 
-snap.forEach(doc=>{
-let div=document.createElement("div");
-div.className="project";
-div.innerHTML=doc.data().name;
+    snap.forEach(doc=>{
+      html += `
+        <div onclick="openProject('${doc.id}')">
+          <h3>${doc.data().name}</h3>
+          <small>${doc.id}</small>
+        </div>
+      `;
+    });
 
-div.onclick=()=>openProject(doc.id);
-
-document.getElementById("projects").appendChild(div);
-});
-
-});
-}
-
-function openProject(id){
-localStorage.setItem("projectId",id);
-window.location.href="editor.html";
+    document.getElementById("projects").innerHTML = html;
+  });
 }
 
 function joinProject(){
-let code=document.getElementById("joinCode").value;
+  let code = document.getElementById("joinCode").value;
 
-db.collection("projects").doc(code).get().then(doc=>{
-if(doc.exists){
-db.collection("projects").doc(code).update({
-members:firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
-});
-openProject(code);
-}else{
-alert("Invalid Code");
+  db.collection("projects").doc(code).get().then(doc=>{
+    if(doc.exists){
+      db.collection("projects").doc(code).update({
+        members: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
+      });
+
+      openProject(code);
+    }else{
+      alert("Invalid Code");
+    }
+  });
 }
-});
+
+function openProject(id){
+  window.location.href="editor.html?id="+id;
 }
 
 function logout(){
-auth.signOut().then(()=>window.location.href="login.html");
+  auth.signOut().then(()=>{
+    window.location.href="login.html";
+  });
 }
 
 </script>

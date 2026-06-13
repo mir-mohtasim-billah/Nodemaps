@@ -143,6 +143,66 @@ function collabProfileFromUser(user){
   };
 }
 
+
+/* OWNER FIX:
+   Your dashboard may create project docs with ownerId / ownerUid / createdBy instead of owner.
+   This resolver makes the real creator/main user become owner and prevents the owner from being kicked. */
+function collabResolveOwnerUid(data, user){
+  data = data || {};
+  const uid = user && user.uid;
+  const email = (user && user.email ? user.email : "").toLowerCase();
+
+  const direct = data.owner || data.ownerUid || data.ownerId || data.createdBy || data.createdByUid || data.userId || data.uid || data.creatorUid;
+  if(direct) return direct;
+
+  const emailOwner = String(data.ownerEmail || data.createdByEmail || data.email || "").toLowerCase();
+  if(email && emailOwner && emailOwner === email) return uid;
+
+  const roles = data.roles || {};
+  for(const k in roles){
+    if(roles[k] === "owner") return k;
+  }
+
+  const members = Array.isArray(data.members) ? data.members : [];
+  if(members.length === 1) return members[0];
+
+  // If dashboard created a totally blank project document, first authenticated opener becomes owner.
+  if(uid && !data.owner && !data.ownerUid && !data.ownerId && !data.createdBy && members.length === 0 && Object.keys(roles).length === 0){
+    return uid;
+  }
+
+  return data.owner || null;
+}
+
+function collabIsOwnerUser(data, uid){
+  return !!uid && collabResolveOwnerUid(data, collabCurrentUser) === uid;
+}
+
+function collabRepairOwnerFields(data){
+  if(!collabCurrentUser || !window.__collabEnabled) return;
+  const uid = collabCurrentUser.uid;
+  const ownerUid = collabResolveOwnerUid(data || {}, collabCurrentUser);
+  if(ownerUid !== uid) return;
+
+  const roles = (data && data.roles) || {};
+  const members = (data && data.members) || [];
+  const update = {
+    owner: uid,
+    ownerEmail: collabCurrentUser.email || "",
+    members: firebase.firestore.FieldValue.arrayUnion(uid),
+    kicked: firebase.firestore.FieldValue.arrayRemove(uid),
+    updatedAt: Date.now(),
+    updatedBy: uid
+  };
+  if(roles[uid] !== "owner") update["roles." + uid] = "owner";
+  update["dashboardAccess." + uid] = true;
+  update["memberProfiles." + uid] = collabProfileFromUser(collabCurrentUser);
+
+  collabProjectRef().set(update, { merge:true }).catch(err=>{
+    console.warn("Owner repair skipped/failed. Check Firestore rules if this repeats.", err);
+  });
+}
+
 async function collabSaveUserProfile(user){
   if(!user) return;
   await collabDb.collection("users").doc(user.uid).set(collabProfileFromUser(user), { merge:true });
@@ -151,6 +211,7 @@ async function collabSaveUserProfile(user){
 function collabCurrentRole(){
   if(!collabCurrentUser) return "viewer";
   if(collabCurrentUser.uid === collabOwner) return "owner";
+  if(collabRoles[collabCurrentUser.uid] === "owner") return "owner";
   return collabRoles[collabCurrentUser.uid] || "viewer";
 }
 
@@ -164,9 +225,11 @@ function collabCanManageMembers(){
 }
 
 function collabIsMember(data, uid){
+  data = data || {};
   const members = data.members || [];
   const roles = data.roles || {};
-  return data.owner === uid || members.includes(uid) || !!roles[uid];
+  const ownerUid = collabResolveOwnerUid(data, collabCurrentUser);
+  return ownerUid === uid || data.owner === uid || data.ownerUid === uid || data.ownerId === uid || data.createdBy === uid || members.includes(uid) || !!roles[uid];
 }
 
 function collabApplyRoleUI(){
@@ -235,8 +298,7 @@ async function collabJoinProject(){
   const ref = collabProjectRef();
   const snap = await ref.get();
 
-  // If the dashboard already created a blank doc, this block will not run.
-  // This only creates a new project when the project id does not exist at all.
+  // Create project only when the document does not exist at all.
   if(!snap.exists){
     const fresh = collabDefaultProjectData();
     await ref.set(fresh);
@@ -250,33 +312,52 @@ async function collabJoinProject(){
 
   const data = snap.data() || {};
   const uid = collabCurrentUser.uid;
+  const resolvedOwner = collabResolveOwnerUid(data, collabCurrentUser);
+  const userIsOwner = resolvedOwner === uid;
 
-  if((data.kicked || []).includes(uid) && data.owner !== uid){
+  // Repair old dashboard-created docs where owner field was missing/wrong.
+  if(userIsOwner){
+    collabOwner = uid;
+    collabRoles = data.roles || {};
+    collabMembers = data.members || [];
+    collabMemberProfiles = data.memberProfiles || {};
+    collabDashboardAccess = data.dashboardAccess || {};
+    collabRepairOwnerFields(data);
+  }
+
+  // Owner must never lose access even if an old bad kicked list contains them.
+  if((data.kicked || []).includes(uid) && !userIsOwner){
     alert("You were removed from this project.");
     window.location.href = "dashboard.html";
     return false;
   }
 
-  if(!collabIsMember(data, uid)){
+  if(!userIsOwner && !collabIsMember(data, uid)){
     alert("You do not have access to this project. Ask the owner to add you to this project.");
     window.location.href = "dashboard.html";
     return false;
   }
 
-  collabOwner = data.owner || uid;
+  collabOwner = resolvedOwner || data.owner || uid;
   collabRoles = data.roles || {};
   collabMembers = data.members || [];
   collabMemberProfiles = data.memberProfiles || {};
   collabDashboardAccess = data.dashboardAccess || {};
 
   const update = {};
-  if(uid === collabOwner && !collabMembers.includes(uid)){
-    update.members = firebase.firestore.FieldValue.arrayUnion(uid);
-  }
-  if(!collabRoles[uid]){
-    update["roles." + uid] = uid === collabOwner ? "owner" : "viewer";
-  }
   update["memberProfiles." + uid] = collabProfileFromUser(collabCurrentUser);
+
+  if(userIsOwner){
+    update.owner = uid;
+    update.ownerEmail = collabCurrentUser.email || "";
+    update.members = firebase.firestore.FieldValue.arrayUnion(uid);
+    update.kicked = firebase.firestore.FieldValue.arrayRemove(uid);
+    update["roles." + uid] = "owner";
+    update["dashboardAccess." + uid] = true;
+  }else{
+    update.members = firebase.firestore.FieldValue.arrayUnion(uid);
+    if(!collabRoles[uid]) update["roles." + uid] = "viewer";
+  }
 
   await ref.set(update, { merge:true });
   await collabWritePresence(true);
@@ -292,20 +373,25 @@ function collabListenProject(){
     const data = doc.data() || {};
     const uid = collabCurrentUser && collabCurrentUser.uid;
 
-    collabOwner = data.owner || collabOwner;
+    const resolvedOwner = collabResolveOwnerUid(data, collabCurrentUser);
+    collabOwner = resolvedOwner || data.owner || collabOwner;
     collabRoles = data.roles || {};
     collabMembers = data.members || [];
     collabMemberProfiles = data.memberProfiles || {};
     collabDashboardAccess = data.dashboardAccess || {};
     window.__collabRole = collabCurrentRole();
 
-    if(uid && (data.kicked || []).includes(uid) && data.owner !== uid){
+    if(uid && uid === collabOwner){
+      collabRepairOwnerFields(data);
+    }
+
+    if(uid && (data.kicked || []).includes(uid) && uid !== collabOwner){
       alert("You were removed from this project.");
       window.location.href = "dashboard.html";
       return;
     }
 
-    if(uid && !collabIsMember(data, uid)){
+    if(uid && uid !== collabOwner && !collabIsMember(data, uid)){
       alert("You no longer have access to this project.");
       window.location.href = "dashboard.html";
       return;
@@ -647,6 +733,10 @@ function collabSetRole(uid, role){
 
 function collabKickUser(uid){
   if(!collabCanManageMembers()) return;
+  if(uid === collabOwner || (collabCurrentUser && uid === collabCurrentUser.uid)){
+    status("Owner cannot be kicked from their own project.");
+    return;
+  }
   if(!confirm("Remove this user from this project only?")) return;
 
   const update={

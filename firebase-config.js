@@ -7,9 +7,8 @@ const firebaseConfig = {
   appId: "1:87271462319:web:7768c6454ca14ef59b0b5a"
 };
 
-// INIT
 firebase.initializeApp(firebaseConfig);
 
-// GLOBAL ACCESS
+// IMPORTANT (must add this)
 window.auth = firebase.auth();
 window.db = firebase.firestore();

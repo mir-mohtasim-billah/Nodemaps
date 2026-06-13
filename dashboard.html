@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS</title>
+  <title>NodeMAPS Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -9,13 +9,15 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family: Arial, sans-serif;
+      font-family:Arial, sans-serif;
     }
 
     body{
-      display:flex;
       height:100vh;
-      background:#f6f7fb;
+      display:flex;
+      background:#f5f7fb;
+      color:#111827;
+      overflow:hidden;
     }
 
     /* SIDEBAR */
@@ -23,172 +25,557 @@
       width:260px;
       background:#111827;
       color:white;
-      padding:18px;
+      padding:20px 18px;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:18px;
     }
 
     .logo{
-      font-size:20px;
+      font-size:22px;
       font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
     }
 
     .nav-item{
-      padding:10px;
-      border-radius:10px;
-      cursor:pointer;
+      padding:11px 12px;
+      border-radius:11px;
       color:#cbd5e1;
+      cursor:pointer;
+      font-size:15px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      transition:.18s;
     }
 
-    .nav-item:hover{
-      background:rgba(255,255,255,0.08);
+    .nav-item:hover,
+    .nav-item.active{
+      background:#1f2937;
       color:white;
     }
 
-    input{
-      padding:10px;
-      border-radius:8px;
+    .join-box{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .join-box input{
       border:none;
       outline:none;
+      padding:11px 12px;
+      border-radius:10px;
+      background:#f9fafb;
+      color:#111827;
+      font-size:14px;
     }
 
     .btn{
-      padding:10px;
       border:none;
-      border-radius:8px;
+      outline:none;
       cursor:pointer;
+      border-radius:10px;
+      padding:10px 12px;
       font-weight:600;
+      font-size:14px;
+      transition:.18s;
     }
 
-    .primary{
-      background:#1a73e8;
+    .btn-primary{
+      background:#2563eb;
       color:white;
+    }
+
+    .btn-primary:hover{
+      background:#1d4ed8;
+    }
+
+    .folder-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:#9ca3af;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      margin-top:4px;
+    }
+
+    .folder-add{
+      background:transparent;
+      color:#cbd5e1;
+      border:none;
+      cursor:pointer;
+      font-size:18px;
+    }
+
+    .folders{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-height:190px;
+      overflow:auto;
+    }
+
+    .folder-item{
+      padding:9px 10px;
+      border-radius:10px;
+      color:#cbd5e1;
+      cursor:pointer;
+      font-size:14px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      transition:.18s;
+    }
+
+    .folder-item:hover,
+    .folder-item.active{
+      background:#1f2937;
+      color:white;
+    }
+
+    .sidebar-footer{
+      margin-top:auto;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top:14px;
+    }
+
+    .user-small{
+      font-size:12px;
+      color:#9ca3af;
+      margin-bottom:8px;
+      word-break:break-all;
+    }
+
+    .logout-btn{
+      width:100%;
+      background:#1f2937;
+      color:white;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .logout-btn:hover{
+      background:#374151;
     }
 
     /* MAIN */
     .main{
       flex:1;
-      padding:20px;
       overflow:auto;
+      padding:34px 34px 70px;
     }
 
-    .topbar{
+    .top-row{
       display:flex;
       justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:24px;
+    }
+
+    .welcome h1{
+      font-size:30px;
+      margin-bottom:8px;
+      font-weight:700;
+      color:#111827;
+    }
+
+    .welcome p{
+      color:#6b7280;
+      font-size:16px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
       align-items:center;
-      margin-bottom:15px;
     }
 
-    .title{
-      font-size:22px;
-      font-weight:600;
+    .top-logout{
+      background:white;
+      color:#374151;
+      border:1px solid #e5e7eb;
+      box-shadow:0 8px 18px rgba(0,0,0,.04);
     }
 
-    /* SEARCH */
-    .search{
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      border:1px solid #ddd;
-      margin-bottom:15px;
+    .top-logout:hover{
+      background:#f9fafb;
     }
 
-    /* PROJECT ITEM */
-    .project{
+    /* TEMPLATE CARDS */
+    .cards{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+      margin-bottom:32px;
+    }
+
+    .card{
+      width:190px;
+      height:155px;
       background:white;
       border:1px solid #e5e7eb;
-      border-radius:12px;
-      padding:12px;
-      margin-bottom:10px;
+      border-radius:16px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      box-shadow:0 10px 28px rgba(0,0,0,.04);
+      transition:.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 36px rgba(0,0,0,.08);
+      border-color:#c7d2fe;
+    }
+
+    .card-icon{
+      font-size:36px;
+      margin-bottom:13px;
+    }
+
+    .plus{
+      color:#2563eb;
+      font-size:42px;
+      font-weight:300;
+    }
+
+    .card span{
+      font-size:15px;
+      color:#374151;
+    }
+
+    /* SEARCH + SECTION */
+    .toolbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
+      gap:16px;
+      margin-bottom:14px;
     }
 
-    .left{
-      flex:1;
-      cursor:pointer;
+    .section-title{
+      font-size:17px;
+      font-weight:700;
+      color:#111827;
     }
 
-    .name{
-      font-weight:600;
+    .search{
+      width:330px;
+      max-width:100%;
+      border:1px solid #e5e7eb;
+      background:white;
+      padding:11px 14px;
+      border-radius:12px;
+      outline:none;
+      font-size:14px;
+      box-shadow:0 8px 18px rgba(0,0,0,.03);
     }
 
-    .meta{
-      font-size:12px;
+    .search:focus{
+      border-color:#93c5fd;
+    }
+
+    /* PROJECT LIST */
+    .project-list{
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      overflow:visible;
+      box-shadow:0 18px 38px rgba(0,0,0,.06);
+    }
+
+    .table-head{
+      display:grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      gap:12px;
+      padding:14px 20px;
       color:#6b7280;
-      margin-top:4px;
+      font-size:13px;
+      border-bottom:1px solid #f1f3f5;
+      background:#fbfcff;
+      border-radius:16px 16px 0 0;
     }
 
-    /* 3 DOT MENU */
-    .menu{
+    .project-row{
+      display:grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+      gap:12px;
+      align-items:center;
+      padding:16px 20px;
+      border-bottom:1px solid #f1f3f5;
+      transition:.16s;
       position:relative;
     }
 
-    .dots{
+    .project-row:last-child{
+      border-bottom:none;
+    }
+
+    .project-row:hover{
+      background:#f8fbff;
+    }
+
+    .project-name{
+      display:flex;
+      align-items:center;
+      gap:12px;
       cursor:pointer;
-      font-size:18px;
-      padding:6px;
+      min-width:0;
+    }
+
+    .doc-icon{
+      width:30px;
+      height:30px;
+      border-radius:8px;
+      background:#eaf2ff;
+      color:#2563eb;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:15px;
+      flex:0 0 auto;
+    }
+
+    .name-block{
+      min-width:0;
+    }
+
+    .name-text{
+      font-weight:600;
+      color:#111827;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:360px;
+    }
+
+    .code-text{
+      color:#9ca3af;
+      font-size:12px;
+      margin-top:3px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:360px;
+    }
+
+    .cell{
+      color:#6b7280;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .star-mark{
+      color:#f59e0b;
+      margin-right:4px;
+    }
+
+    .menu-wrap{
+      position:relative;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .dots{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:20px;
+      color:#6b7280;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .dots:hover{
+      background:#eef2ff;
+      color:#111827;
     }
 
     .dropdown{
+      display:none;
       position:absolute;
       right:0;
-      top:25px;
+      top:38px;
+      width:190px;
       background:white;
-      border:1px solid #ddd;
-      border-radius:10px;
-      display:none;
-      min-width:140px;
-      box-shadow:0 10px 20px rgba(0,0,0,0.1);
-      z-index:10;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      box-shadow:0 20px 45px rgba(0,0,0,.14);
+      z-index:1000;
+      overflow:hidden;
     }
 
-    .dropdown div{
-      padding:10px;
+    .dropdown.show{
+      display:block;
+    }
+
+    .menu-option{
+      padding:11px 13px;
       cursor:pointer;
-      font-size:13px;
+      font-size:14px;
+      color:#374151;
+      display:flex;
+      gap:9px;
+      align-items:center;
     }
 
-    .dropdown div:hover{
-      background:#f3f4f6;
+    .menu-option:hover{
+      background:#f3f6ff;
     }
 
-    .star{
-      color:gold;
+    .menu-danger{
+      color:#dc2626;
     }
 
+    .empty{
+      padding:30px;
+      color:#6b7280;
+      text-align:center;
+      font-size:14px;
+    }
+
+    @media(max-width:900px){
+      .sidebar{
+        width:220px;
+      }
+
+      .table-head{
+        display:none;
+      }
+
+      .project-row{
+        grid-template-columns:1fr 45px;
+      }
+
+      .cell{
+        display:none;
+      }
+
+      .toolbar{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .search{
+        width:100%;
+      }
+    }
+
+    @media(max-width:650px){
+      body{
+        flex-direction:column;
+        overflow:auto;
+      }
+
+      .sidebar{
+        width:100%;
+        min-height:auto;
+      }
+
+      .main{
+        padding:22px;
+      }
+
+      .cards{
+        gap:12px;
+      }
+
+      .card{
+        width:100%;
+        height:130px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="logo">NodeMAPS</div>
+  <aside class="sidebar">
+    <div class="logo">NodeMAPS</div>
 
-  <input id="joinCode" placeholder="Join code">
-  <button class="btn primary" onclick="joinProject()">Join</button>
+    <div class="nav" id="mainNav"></div>
 
-  <div class="nav-item" onclick="filterMode='all';load()">🏠 All</div>
-  <div class="nav-item" onclick="filterMode='starred';load()">⭐ Starred</div>
-  <div class="nav-item" onclick="filterMode='shared';load()">👥 Shared</div>
-</div>
+    <div class="join-box">
+      <input id="joinCode" placeholder="Enter project code">
+      <button class="btn btn-primary" onclick="joinProject()">Join Project</button>
+    </div>
 
-<!-- MAIN -->
-<div class="main">
+    <div class="folder-title">
+      <span>Folders</span>
+      <button class="folder-add" onclick="createFolder()" title="Create folder">+</button>
+    </div>
 
-  <div class="topbar">
-    <div class="title">My Projects</div>
-    <button class="btn primary" onclick="createProject()">+ New</button>
-  </div>
+    <div class="folders" id="foldersList"></div>
 
-  <input class="search" placeholder="Search projects..." oninput="search(this.value)">
+    <div class="sidebar-footer">
+      <div class="user-small" id="userEmail">Signed in</div>
+      <button class="btn logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </aside>
 
-  <div id="list"></div>
+  <main class="main">
+    <div class="top-row">
+      <div class="welcome">
+        <h1>Welcome back 👋</h1>
+        <p>Create, organize and explore your mind maps</p>
+      </div>
 
-</div>
+      <div class="top-actions">
+        <button class="btn top-logout" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card" onclick="createProject('blank')">
+        <div class="card-icon plus">+</div>
+        <span>Blank Map</span>
+      </div>
+
+      <div class="card" onclick="createProject('mindmap')">
+        <div class="card-icon">🧠</div>
+        <span>Mind Map</span>
+      </div>
+
+      <div class="card" onclick="createProject('orgchart')">
+        <div class="card-icon">🏗️</div>
+        <span>Org Chart</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="section-title" id="viewTitle">My Maps</div>
+      <input class="search" id="searchInput" placeholder="Search projects..." oninput="setSearch(this.value)">
+    </div>
+
+    <div class="project-list">
+      <div class="table-head">
+        <div>Name</div>
+        <div>Owner</div>
+        <div>Folder</div>
+        <div>Updated</div>
+        <div></div>
+      </div>
+
+      <div id="projects"></div>
+    </div>
+  </main>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -197,161 +584,497 @@
 <script src="firebase-config.js"></script>
 
 <script>
+let currentUser = null;
+let allProjects = [];
+let allFolders = [];
+let currentView = "all";
+let currentFolder = null;
+let searchText = "";
+let projectsUnsub = null;
+let foldersUnsub = null;
 
-let filterMode="all";
-let allProjects=[];
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
 
-auth.onAuthStateChanged(user=>{
-  if(!user) window.location.href="login.html";
-  load();
+  currentUser = user;
+  document.getElementById("userEmail").textContent = user.email || user.displayName || "Signed in";
+
+  renderMainNav();
+  loadProjects();
+  loadFolders();
 });
 
-/* CREATE */
-function createProject(){
-  let id="p_"+Date.now();
+function renderMainNav(){
+  const items = [
+    { id:"all", label:"Home", icon:"🏠" },
+    { id:"starred", label:"Favorites", icon:"⭐" },
+    { id:"shared", label:"Shared with me", icon:"👥" },
+    { id:"trash", label:"Trash", icon:"🗑️" }
+  ];
 
-  db.collection("projects").doc(id).set({
-    name:"Untitled Project",
-    owner:auth.currentUser.uid,
-    members:[auth.currentUser.uid],
-    starred:false,
-    folder:"root",
-    sharedWith:[],
-    createdAt:Date.now(),
-    updatedAt:Date.now()
-  }).then(()=>{
-    openProject(id);
-  });
-}
+  let html = "";
 
-/* LOAD */
-function load(){
-  db.collection("projects")
-  .where("members","array-contains",auth.currentUser.uid)
-  .onSnapshot(snap=>{
-
-    allProjects = [];
-
-    snap.forEach(doc=>{
-      let d=doc.data();
-      d.id=doc.id;
-      allProjects.push(d);
-    });
-
-    render(allProjects);
-
-  });
-}
-
-/* RENDER */
-function render(list){
-
-  let html="";
-
-  list.forEach(p=>{
-
-    if(filterMode==="starred" && !p.starred) return;
-    if(filterMode==="shared" && (!p.sharedWith || p.sharedWith.length===0)) return;
-
-    let created = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "-";
-
-    html+=`
-      <div class="project">
-
-        <div class="left" onclick="openProject('${p.id}')">
-          <div class="name">
-            ${p.starred ? "⭐ " : ""}${p.name}
-          </div>
-          <div class="meta">Created: ${created}</div>
-        </div>
-
-        <div class="menu">
-          <div class="dots" onclick="toggleMenu(event,'${p.id}')">⋮</div>
-
-          <div class="dropdown" id="menu-${p.id}">
-            <div onclick="rename(event,'${p.id}')">Rename</div>
-            <div onclick="toggleStar(event,'${p.id}')">Star</div>
-            <div onclick="deleteProject(event,'${p.id}')">Delete</div>
-          </div>
-
-        </div>
-
+  items.forEach(item => {
+    html += `
+      <div class="nav-item ${currentView === item.id ? "active" : ""}" onclick="setView('${item.id}')">
+        <span>${item.icon}</span>
+        <span>${item.label}</span>
       </div>
     `;
   });
 
-  document.getElementById("list").innerHTML = html;
+  document.getElementById("mainNav").innerHTML = html;
 }
 
-/* MENU */
-function toggleMenu(e,id){
-  e.stopPropagation();
+function renderFolders(){
+  let html = `
+    <div class="folder-item ${currentView === "folder" && currentFolder === "root" ? "active" : ""}" onclick="setFolder('root')">
+      📁 Root
+    </div>
+  `;
 
-  document.querySelectorAll(".dropdown").forEach(d=>d.style.display="none");
+  allFolders.forEach(folder => {
+    html += `
+      <div class="folder-item ${currentView === "folder" && currentFolder === folder.id ? "active" : ""}" onclick="setFolder('${folder.id}')">
+        📁 ${escapeHTML(folder.name)}
+      </div>
+    `;
+  });
 
-  let menu=document.getElementById("menu-"+id);
-  menu.style.display = menu.style.display==="block"?"none":"block";
+  document.getElementById("foldersList").innerHTML = html;
 }
 
-/* STAR */
-function toggleStar(e,id){
-  e.stopPropagation();
+function setView(view){
+  currentView = view;
+  currentFolder = null;
+  renderMainNav();
+  renderFolders();
+  renderProjects();
+}
 
-  let p = allProjects.find(x=>x.id===id);
+function setFolder(folderId){
+  currentView = "folder";
+  currentFolder = folderId;
+  renderMainNav();
+  renderFolders();
+  renderProjects();
+}
 
-  db.collection("projects").doc(id).update({
-    starred: !p.starred,
-    updatedAt:Date.now()
+function setSearch(value){
+  searchText = value.toLowerCase().trim();
+  renderProjects();
+}
+
+function loadProjects(){
+  if (projectsUnsub) projectsUnsub();
+
+  projectsUnsub = db.collection("projects")
+    .where("members", "array-contains", currentUser.uid)
+    .onSnapshot(snapshot => {
+      allProjects = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        data.id = doc.id;
+        allProjects.push(data);
+      });
+
+      allProjects.sort((a,b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
+
+      renderProjects();
+    }, error => {
+      document.getElementById("projects").innerHTML = `
+        <div class="empty">Failed to load projects: ${escapeHTML(error.message)}</div>
+      `;
+    });
+}
+
+function loadFolders(){
+  if (foldersUnsub) foldersUnsub();
+
+  foldersUnsub = db.collection("folders")
+    .where("members", "array-contains", currentUser.uid)
+    .onSnapshot(snapshot => {
+      allFolders = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        data.id = doc.id;
+        allFolders.push(data);
+      });
+
+      allFolders.sort((a,b) => (a.name || "").localeCompare(b.name || ""));
+
+      renderFolders();
+    }, error => {
+      console.log("Folder load failed:", error.message);
+    });
+}
+
+function renderProjects(){
+  let filtered = allProjects.filter(project => {
+    const deleted = project.deleted === true;
+    const ownerIsMe = project.owner === currentUser.uid;
+    const folder = project.folder || "root";
+    const name = (project.name || "Untitled Project").toLowerCase();
+
+    if (searchText && !name.includes(searchText)) return false;
+
+    if (currentView === "all") return !deleted;
+    if (currentView === "starred") return !deleted && project.starred === true;
+    if (currentView === "shared") return !deleted && !ownerIsMe;
+    if (currentView === "trash") return deleted;
+    if (currentView === "folder") return !deleted && folder === currentFolder;
+
+    return !deleted;
+  });
+
+  updateViewTitle();
+
+  if (filtered.length === 0) {
+    document.getElementById("projects").innerHTML = `
+      <div class="empty">No projects found</div>
+    `;
+    return;
+  }
+
+  let html = "";
+
+  filtered.forEach(project => {
+    const ownerText = project.owner === currentUser.uid ? "me" : "shared";
+    const folderName = getFolderName(project.folder || "root");
+    const updated = formatDate(project.updatedAt || project.createdAt);
+    const created = formatDate(project.createdAt);
+    const projectName = project.name || "Untitled Project";
+
+    html += `
+      <div class="project-row">
+        <div class="project-name" onclick="openProject('${project.id}')">
+          <div class="doc-icon">▤</div>
+
+          <div class="name-block">
+            <div class="name-text">
+              ${project.starred ? '<span class="star-mark">★</span>' : ""}
+              ${escapeHTML(projectName)}
+            </div>
+            <div class="code-text">
+              ${escapeHTML(project.id)} • Created ${created}
+            </div>
+          </div>
+        </div>
+
+        <div class="cell">${ownerText}</div>
+        <div class="cell">${escapeHTML(folderName)}</div>
+        <div class="cell">${updated}</div>
+
+        <div class="menu-wrap">
+          <button class="dots" onclick="toggleMenu(event, '${project.id}')">⋮</button>
+
+          <div class="dropdown" id="menu-${project.id}">
+            ${
+              currentView === "trash"
+              ? `
+                <div class="menu-option" onclick="restoreProject(event, '${project.id}')">↩️ Restore</div>
+                <div class="menu-option menu-danger" onclick="deleteForever(event, '${project.id}')">🗑️ Delete forever</div>
+              `
+              : `
+                <div class="menu-option" onclick="renameProject(event, '${project.id}')">✏️ Rename</div>
+                <div class="menu-option" onclick="toggleStar(event, '${project.id}')">
+                  ${project.starred ? "☆ Unstar" : "⭐ Star"}
+                </div>
+                <div class="menu-option" onclick="moveToFolder(event, '${project.id}')">📁 Move to folder</div>
+                <div class="menu-option" onclick="copyProjectCode(event, '${project.id}')">🔗 Copy share code</div>
+                <div class="menu-option menu-danger" onclick="moveToTrash(event, '${project.id}')">🗑️ Move to trash</div>
+              `
+            }
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("projects").innerHTML = html;
+}
+
+function updateViewTitle(){
+  let title = "My Maps";
+
+  if (currentView === "starred") title = "Favorites";
+  if (currentView === "shared") title = "Shared with me";
+  if (currentView === "trash") title = "Trash";
+  if (currentView === "folder") title = "Folder: " + getFolderName(currentFolder);
+
+  document.getElementById("viewTitle").textContent = title;
+}
+
+function createProject(type){
+  const id = "p_" + Date.now();
+
+  let name = "Untitled Project";
+  if (type === "mindmap") name = "Untitled Mind Map";
+  if (type === "orgchart") name = "Untitled Org Chart";
+
+  db.collection("projects").doc(id).set({
+    name: name,
+    type: type || "blank",
+    owner: currentUser.uid,
+    ownerEmail: currentUser.email || "",
+    members: [currentUser.uid],
+    sharedWith: [],
+    starred: false,
+    folder: "root",
+    deleted: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }).then(() => {
+    openProject(id);
+  }).catch(error => {
+    alert("Project create failed: " + error.message);
   });
 }
 
-/* RENAME */
-function rename(e,id){
-  e.stopPropagation();
+function createFolder(){
+  const name = prompt("Folder name:");
 
-  let name=prompt("Rename:");
-  if(!name) return;
+  if (!name || !name.trim()) return;
 
-  db.collection("projects").doc(id).update({
-    name,
-    updatedAt:Date.now()
+  const id = "f_" + Date.now();
+
+  db.collection("folders").doc(id).set({
+    name: name.trim(),
+    owner: currentUser.uid,
+    members: [currentUser.uid],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }).catch(error => {
+    alert("Folder create failed: " + error.message);
   });
 }
 
-/* DELETE */
-function deleteProject(e,id){
-  e.stopPropagation();
+function moveToFolder(event, projectId){
+  event.stopPropagation();
 
-  if(!confirm("Delete?")) return;
+  const folderName = prompt("Enter folder name. Type root to remove from folder:");
 
-  db.collection("projects").doc(id).delete();
+  if (!folderName || !folderName.trim()) return;
+
+  const cleanName = folderName.trim();
+
+  if (cleanName.toLowerCase() === "root") {
+    db.collection("projects").doc(projectId).update({
+      folder: "root",
+      updatedAt: Date.now()
+    });
+    return;
+  }
+
+  let existing = allFolders.find(f => (f.name || "").toLowerCase() === cleanName.toLowerCase());
+
+  if (existing) {
+    db.collection("projects").doc(projectId).update({
+      folder: existing.id,
+      updatedAt: Date.now()
+    });
+    return;
+  }
+
+  const newFolderId = "f_" + Date.now();
+
+  db.collection("folders").doc(newFolderId).set({
+    name: cleanName,
+    owner: currentUser.uid,
+    members: [currentUser.uid],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  }).then(() => {
+    return db.collection("projects").doc(projectId).update({
+      folder: newFolderId,
+      updatedAt: Date.now()
+    });
+  }).catch(error => {
+    alert("Move failed: " + error.message);
+  });
 }
 
-/* SEARCH */
-function search(val){
-  let filtered = allProjects.filter(p =>
-    p.name.toLowerCase().includes(val.toLowerCase())
-  );
+function renameProject(event, projectId){
+  event.stopPropagation();
 
-  render(filtered);
+  const project = allProjects.find(p => p.id === projectId);
+  const oldName = project ? project.name : "";
+
+  const newName = prompt("Rename project:", oldName || "Untitled Project");
+
+  if (!newName || !newName.trim()) return;
+
+  db.collection("projects").doc(projectId).update({
+    name: newName.trim(),
+    updatedAt: Date.now()
+  }).catch(error => {
+    alert("Rename failed: " + error.message);
+  });
 }
 
-/* JOIN */
+function toggleStar(event, projectId){
+  event.stopPropagation();
+
+  const project = allProjects.find(p => p.id === projectId);
+  if (!project) return;
+
+  db.collection("projects").doc(projectId).update({
+    starred: !project.starred,
+    updatedAt: Date.now()
+  }).catch(error => {
+    alert("Star update failed: " + error.message);
+  });
+}
+
+function moveToTrash(event, projectId){
+  event.stopPropagation();
+
+  if (!confirm("Move this project to trash?")) return;
+
+  db.collection("projects").doc(projectId).update({
+    deleted: true,
+    updatedAt: Date.now()
+  }).catch(error => {
+    alert("Delete failed: " + error.message);
+  });
+}
+
+function restoreProject(event, projectId){
+  event.stopPropagation();
+
+  db.collection("projects").doc(projectId).update({
+    deleted: false,
+    updatedAt: Date.now()
+  }).catch(error => {
+    alert("Restore failed: " + error.message);
+  });
+}
+
+function deleteForever(event, projectId){
+  event.stopPropagation();
+
+  if (!confirm("Delete forever? This cannot be undone.")) return;
+
+  db.collection("projects").doc(projectId).delete().catch(error => {
+    alert("Permanent delete failed: " + error.message);
+  });
+}
+
+function copyProjectCode(event, projectId){
+  event.stopPropagation();
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(projectId).then(() => {
+      alert("Project code copied. Send this code to someone so they can join.");
+    }).catch(() => {
+      prompt("Copy this project code:", projectId);
+    });
+  } else {
+    prompt("Copy this project code:", projectId);
+  }
+}
+
 function joinProject(){
-  let code=document.getElementById("joinCode").value;
+  const code = document.getElementById("joinCode").value.trim();
 
-  db.collection("projects").doc(code).update({
-    sharedWith: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
+  if (!code) {
+    alert("Please enter project code");
+    return;
+  }
+
+  const ref = db.collection("projects").doc(code);
+
+  ref.get().then(doc => {
+    if (!doc.exists) {
+      alert("Invalid project code");
+      return;
+    }
+
+    const data = doc.data();
+
+    if (data.deleted === true) {
+      alert("This project is in trash");
+      return;
+    }
+
+    const updateData = {
+      members: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+      updatedAt: Date.now()
+    };
+
+    if (data.owner !== currentUser.uid) {
+      updateData.sharedWith = firebase.firestore.FieldValue.arrayUnion(currentUser.uid);
+    }
+
+    return ref.update(updateData).then(() => {
+      openProject(code);
+    });
+  }).catch(error => {
+    alert("Join failed: " + error.message);
+  });
+}
+
+function openProject(projectId){
+  window.location.href = "editor.html?id=" + encodeURIComponent(projectId);
+}
+
+function logout(){
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  }).catch(error => {
+    alert("Logout failed: " + error.message);
+  });
+}
+
+function toggleMenu(event, projectId){
+  event.stopPropagation();
+
+  document.querySelectorAll(".dropdown").forEach(menu => {
+    if (menu.id !== "menu-" + projectId) {
+      menu.classList.remove("show");
+    }
   });
 
-  openProject(code);
+  const menu = document.getElementById("menu-" + projectId);
+  if (menu) menu.classList.toggle("show");
 }
 
-/* OPEN */
-function openProject(id){
-  window.location.href="editor.html?id="+id;
+document.addEventListener("click", () => {
+  document.querySelectorAll(".dropdown").forEach(menu => {
+    menu.classList.remove("show");
+  });
+});
+
+function getFolderName(folderId){
+  if (!folderId || folderId === "root") return "Root";
+
+  const folder = allFolders.find(f => f.id === folderId);
+  return folder ? folder.name : "Unknown";
 }
 
+function formatDate(timestamp){
+  if (!timestamp) return "-";
+
+  return new Date(timestamp).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+
+function escapeHTML(text){
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 </script>
 
 </body>

@@ -458,6 +458,7 @@
         min-height:auto;
         padding:18px;
         gap:16px;
+        border-radius:0 0 22px 22px;
       }
 
       .brand{
@@ -1074,57 +1075,104 @@ function copyProjectCode(event, projectId){
   }
 }
 
-/* FIXED JOIN:
-   1) If user enters 6 digit invite code, read inviteCodes/{code}
-   2) Add user to projects/{projectId}
-   3) Apply role from invite code
-   4) Open editor.html?id=projectId
-   5) If not invite code, fallback to direct project ID
-*/
+/* FIXED JOIN SYSTEM */
 async function joinProject(){
-  const input = document.getElementById("joinCode").value.trim();
+  const raw = document.getElementById("joinCode").value || "";
+  const cleanInput = normalizeJoinInput(raw);
 
-  if (!input) {
+  if (!cleanInput) {
     alert("Please enter invite code or project ID");
     return;
   }
 
   try {
-    if (/^\d{6}$/.test(input)) {
-      await joinByInviteCode(input);
+    if (/^\d{6}$/.test(cleanInput)) {
+      await joinByInviteCode(cleanInput);
       return;
     }
 
-    await joinByProjectId(input);
+    await joinByProjectId(cleanInput);
 
   } catch (error) {
-    console.error(error);
+    console.error("JOIN ERROR:", error);
     alert("Join failed: " + error.message);
   }
 }
 
-async function joinByInviteCode(code){
-  const inviteDoc = await db.collection("inviteCodes").doc(code).get();
+function normalizeJoinInput(value){
+  return String(value)
+    .trim()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "")
+    .replace(/[^\w]/g, "");
+}
 
-  if (!inviteDoc.exists) {
-    alert("Invalid invite code");
+async function findInviteCode(code){
+  let directSnap = await db.collection("inviteCodes").doc(String(code)).get();
+
+  if (directSnap.exists) {
+    return {
+      id: directSnap.id,
+      data: directSnap.data()
+    };
+  }
+
+  let queryByString = await db.collection("inviteCodes")
+    .where("code", "==", String(code))
+    .limit(1)
+    .get();
+
+  if (!queryByString.empty) {
+    let doc = queryByString.docs[0];
+    return {
+      id: doc.id,
+      data: doc.data()
+    };
+  }
+
+  let queryByNumber = await db.collection("inviteCodes")
+    .where("code", "==", Number(code))
+    .limit(1)
+    .get();
+
+  if (!queryByNumber.empty) {
+    let doc = queryByNumber.docs[0];
+    return {
+      id: doc.id,
+      data: doc.data()
+    };
+  }
+
+  return null;
+}
+
+async function joinByInviteCode(code){
+  const inviteResult = await findInviteCode(code);
+
+  if (!inviteResult) {
+    alert(
+      "Invalid invite code.\n\n" +
+      "Code checked: " + code + "\n\n" +
+      "Generate a fresh 6 digit code from Add User inside the owner project, then try again."
+    );
     return;
   }
 
-  const invite = inviteDoc.data();
+  const inviteId = inviteResult.id;
+  const invite = inviteResult.data || {};
 
   if (invite.active === false) {
     alert("This invite code is inactive");
     return;
   }
 
-  if (invite.expiresAt && Date.now() > invite.expiresAt) {
+  if (invite.expiresAt && Date.now() > Number(invite.expiresAt)) {
     alert("This invite code has expired");
     return;
   }
 
-  const used = invite.used || 0;
-  const maxUses = invite.maxUses || 1;
+  const used = Number(invite.used || 0);
+  const maxUses = Number(invite.maxUses || 1);
 
   if (used >= maxUses) {
     alert("This invite code is already used");
@@ -1132,19 +1180,19 @@ async function joinByInviteCode(code){
   }
 
   if (!invite.projectId) {
-    alert("Invite code has no project ID");
+    alert("Invite code found, but projectId is missing");
     return;
   }
 
   const projectRef = db.collection("projects").doc(invite.projectId);
-  const projectDoc = await projectRef.get();
+  const projectSnap = await projectRef.get();
 
-  if (!projectDoc.exists) {
-    alert("Project not found");
+  if (!projectSnap.exists) {
+    alert("Invite code found, but project does not exist");
     return;
   }
 
-  const project = projectDoc.data();
+  const project = projectSnap.data() || {};
 
   if (project.deleted === true) {
     alert("This project is in trash");
@@ -1168,7 +1216,7 @@ async function joinByInviteCode(code){
 
   await projectRef.set(updateData, { merge:true });
 
-  await db.collection("inviteCodes").doc(code).set({
+  await db.collection("inviteCodes").doc(inviteId).set({
     used: firebase.firestore.FieldValue.increment(1),
     usedBy: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
     lastUsedAt: Date.now()
@@ -1179,14 +1227,14 @@ async function joinByInviteCode(code){
 
 async function joinByProjectId(projectId){
   const projectRef = db.collection("projects").doc(projectId);
-  const projectDoc = await projectRef.get();
+  const projectSnap = await projectRef.get();
 
-  if (!projectDoc.exists) {
+  if (!projectSnap.exists) {
     alert("Invalid project ID");
     return;
   }
 
-  const data = projectDoc.data();
+  const data = projectSnap.data() || {};
 
   if (data.deleted === true) {
     alert("This project is in trash");

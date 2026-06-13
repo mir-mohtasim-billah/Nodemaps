@@ -72,7 +72,7 @@ function mapCanvas(){let b=bounds();if(!b)throw Error('Nothing to export.');let 
 function exportPNG(){try{mapCanvas().toBlob(b=>download(b,'mind-map.png'),'image/png')}catch(e){alert(e.message)}}function exportPDF(){try{let c=mapCanvas(),jpg=c.toDataURL('image/jpeg',.92);download(pdfBlob(jpg,c.width,c.height),'mind-map.pdf')}catch(e){alert(e.message)}}function pdfBlob(dataUrl,imgW,imgH){let bin=atob(dataUrl.split(',')[1]),pw=842,ph=595,mar=36,mw=pw-mar*2,mh=ph-mar*2,rat=Math.min(mw/imgW,mh/imgH),w=imgW*rat,h=imgH*rat,x=(pw-w)/2,y=(ph-h)/2,objs=[];objs.push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');objs.push('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');objs.push(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);objs.push(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bin.length} >>\nstream\n${bin}\nendstream\nendobj\n`);let stream=`q\n${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm\n/Im0 Do\nQ\n`;objs.push(`5 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}endstream\nendobj\n`);let pdf='%PDF-1.4\n',offs=[0];objs.forEach(o=>{offs.push(pdf.length);pdf+=o});let xr=pdf.length;pdf+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n`;for(let i=1;i<offs.length;i++)pdf+=String(offs[i]).padStart(10,'0')+' 00000 n \n';pdf+=`trailer\n<< /Size ${objs.length+1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`;let bytes=new Uint8Array(pdf.length);for(let i=0;i<pdf.length;i++)bytes[i]=pdf.charCodeAt(i)&255;return new Blob([bytes],{type:'application/pdf'})}
 function present(){document.body.classList.add('presentation');if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});fit()}function exitPresent(){document.body.classList.remove('presentation');if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{})}
 // Bind events
-$('addRootBtn').onclick=addRoot;$('addChildBtn').onclick=addChild;$('addTextBtn').onclick=addText;$('connectBtn').onclick=()=>{connectMode=!connectMode;connectSourceId=null;$('connectBtn').classList.toggle('active',connectMode);selectedNodes.clear();selectedEdge=null;syncInspector();render()};$('editMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('editMenu'))};$('arrangeMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('arrangeMenu'))};$('fileMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('fileMenu'))};$('copyBtn').onclick=()=>{closeMenus();copySel()};$('pasteBtn').onclick=()=>{closeMenus();pasteSel()};$('duplicateBtn').onclick=()=>{closeMenus();duplicateSel()};$('deleteBtn').onclick=()=>{closeMenus();deleteSel()};$('lockMenuBtn').onclick=()=>{closeMenus();toggleLockSel()};$('collapseMenuBtn').onclick=()=>{closeMenus();toggleCollapseSel()};$('groupBtn').onclick=()=>{closeMenus();groupSel()};$('ungroupBtn').onclick=()=>{closeMenus();ungroupSel()};$('alignLeftBtn').onclick=()=>{closeMenus();align('left')};$('alignCenterBtn').onclick=()=>{closeMenus();align('center')};$('alignRightBtn').onclick=()=>{closeMenus();align('right')};$('alignTopBtn').onclick=()=>{closeMenus();align('top')};$('alignMiddleBtn').onclick=()=>{closeMenus();align('middle')};$('alignBottomBtn').onclick=()=>{closeMenus();align('bottom')};$('distHBtn').onclick=()=>{closeMenus();distribute('h')};$('distVBtn').onclick=()=>{closeMenus();distribute('v')};$('snapBtn').onclick=()=>{snapEnabled=!snapEnabled;$('snapBtn').classList.toggle('active',snapEnabled);status(snapEnabled?'Snap to grid is ON.':'Snap to grid is OFF.')};$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('zoomInBtn').onclick=()=>setZoom(view.scale*1.2);$('zoomOutBtn').onclick=()=>setZoom(view.scale/1.2);$('fitBtn').onclick=fit;$('autoLayoutBtn').onclick=layout;$('newMapBtn').onclick=()=>{closeMenus();newMap()};$('saveEditableBtn').onclick=()=>{closeMenus();saveFile()};$('viewJsonBtn').onclick=()=>{closeMenus();viewProjectJSON()};$('openEditableBtn').onclick=()=>{closeMenus();$('loadFile').click()};$('importOutlineBtn').onclick=()=>{closeMenus();openModal($('importModal'))};$('exportPngBtn').onclick=()=>{closeMenus();exportPNG()};$('exportPdfBtn').onclick=()=>{closeMenus();exportPDF()};$('clearAutosaveBtn').onclick=()=>{closeMenus();localStorage.removeItem(STORAGE_KEY);status('Browser autosave cleared.')};$('loadFile').onchange=e=>{if(e.target.files[0])loadJSON(e.target.files[0]);e.target.value=''};$('importOutlineConfirmBtn').onclick=()=>{importOutline($('outlineText').value);closeModals()};$('searchNextBtn').onclick=search;$('searchClearBtn').onclick=clearSearch;$('searchInput').onkeydown=e=>{if(e.key==='Enter')search()};$('searchInput').oninput=()=>{lastSearch='';if(!$('searchInput').value.trim())clearSearch()};$('helpBtn').onclick=()=>openModal($('helpModal'));$('presentBtn').onclick=present;document.querySelectorAll('.modalCloseBtn').forEach(b=>b.onclick=closeModals);$('copyJsonBtn').onclick=copyProjectJSON;$('closeInspectorBtn').onclick=clearSel;
+$('addRootBtn').onclick=addRoot;$('addChildBtn').onclick=addChild;$('addTextBtn').onclick=addText;$('connectBtn').onclick=()=>{connectMode=!connectMode;connectSourceId=null;$('connectBtn').classList.toggle('active',connectMode);selectedNodes.clear();selectedEdge=null;syncInspector();render()};$('editMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('editMenu'))};$('arrangeMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('arrangeMenu'))};$('fileMenuBtn').onclick=e=>{e.stopPropagation();openMenu($('fileMenu'))};$('copyBtn').onclick=()=>{closeMenus();copySel()};$('pasteBtn').onclick=()=>{closeMenus();pasteSel()};$('duplicateBtn').onclick=()=>{closeMenus();duplicateSel()};$('deleteBtn').onclick=()=>{closeMenus();deleteSel()};$('lockMenuBtn').onclick=()=>{closeMenus();toggleLockSel()};$('collapseMenuBtn').onclick=()=>{closeMenus();toggleCollapseSel()};$('groupBtn').onclick=()=>{closeMenus();groupSel()};$('ungroupBtn').onclick=()=>{closeMenus();ungroupSel()};$('alignLeftBtn').onclick=()=>{closeMenus();align('left')};$('alignCenterBtn').onclick=()=>{closeMenus();align('center')};$('alignRightBtn').onclick=()=>{closeMenus();align('right')};$('alignTopBtn').onclick=()=>{closeMenus();align('top')};$('alignMiddleBtn').onclick=()=>{closeMenus();align('middle')};$('alignBottomBtn').onclick=()=>{closeMenus();align('bottom')};$('distHBtn').onclick=()=>{closeMenus();distribute('h')};$('distVBtn').onclick=()=>{closeMenus();distribute('v')};$('snapBtn').onclick=()=>{snapEnabled=!snapEnabled;$('snapBtn').classList.toggle('active',snapEnabled);status(snapEnabled?'Snap to grid is ON.':'Snap to grid is OFF.')};$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('zoomInBtn').onclick=()=>setZoom(view.scale*1.2);$('zoomOutBtn').onclick=()=>setZoom(view.scale/1.2);$('fitBtn').onclick=fit;$('autoLayoutBtn').onclick=layout;$('newMapBtn').onclick=()=>{closeMenus();newMap()};$('saveEditableBtn').onclick=()=>{closeMenus();saveFile()};$('viewJsonBtn').onclick=()=>{closeMenus();viewProjectJSON()};$('openEditableBtn').onclick=()=>{closeMenus();$('loadFile').click()};$('importOutlineBtn').onclick=()=>{closeMenus();openModal($('importModal'))};$('exportPngBtn').onclick=()=>{closeMenus();exportPNG()};$('exportPdfBtn').onclick=()=>{closeMenus();exportPDF()};$('clearAutosaveBtn').onclick=()=>{closeMenus(); status('Browser autosave cleared.')};$('loadFile').onchange=e=>{if(e.target.files[0])loadJSON(e.target.files[0]);e.target.value=''};$('importOutlineConfirmBtn').onclick=()=>{importOutline($('outlineText').value);closeModals()};$('searchNextBtn').onclick=search;$('searchClearBtn').onclick=clearSearch;$('searchInput').onkeydown=e=>{if(e.key==='Enter')search()};$('searchInput').oninput=()=>{lastSearch='';if(!$('searchInput').value.trim())clearSearch()};$('helpBtn').onclick=()=>openModal($('helpModal'));$('presentBtn').onclick=present;document.querySelectorAll('.modalCloseBtn').forEach(b=>b.onclick=closeModals);$('copyJsonBtn').onclick=copyProjectJSON;$('closeInspectorBtn').onclick=clearSel;
 $('nodeText').oninput=()=>{if(suppressInputSnapshot)return;let t=$('nodeText').value;clearTimeout(inputTimer);inputTimer=setTimeout(()=>{if(selectedNodes.size!==1)return;let n=getNode([...selectedNodes][0]);if(!n)return;if(n.locked){status('Node is locked. Unlock it to edit.');syncInspector();return}snapshot();n.text=t===''?'New Idea':t;changed();render()},180)};$('nodeNote').oninput=()=>{if(suppressInputSnapshot)return;let t=$('nodeNote').value;clearTimeout(inputTimer);inputTimer=setTimeout(()=>updateNode('note',t),180)};$('nodeIcon').oninput=()=>updateNode('icon',$('nodeIcon').value);$('emojiRow').onclick=e=>{let b=e.target.closest('button');if(!b)return;$('nodeIcon').value=b.dataset.emoji||'';updateNode('icon',$('nodeIcon').value)};$('shapeSelect').onchange=()=>changeNodeShape($('shapeSelect').value);$('nodeColor').oninput=()=>{$('nodeColorText').textContent=$('nodeColor').value;updateNode('bg',$('nodeColor').value)};$('borderColor').oninput=()=>{$('borderColorText').textContent=$('borderColor').value;updateNode('border',$('borderColor').value)};$('fontSize').oninput=()=>{$('fontSizeText').textContent=$('fontSize').value;updateNode('fontSize',Number($('fontSize').value))};$('nodeWidth').onchange=()=>updateNode('width',Math.max(40,Number($('nodeWidth').value)||170));$('nodeHeight').onchange=()=>updateNode('height',Math.max(24,Number($('nodeHeight').value)||66));$('resetSizeBtn').onclick=resetNodeSize;$('textColor').oninput=()=>{$('textColorText').textContent=$('textColor').value;updateNode('textColor',$('textColor').value)};$('textFont').onchange=()=>updateNode('fontFamily',$('textFont').value);$('branchColor').oninput=()=>{$('branchColorText').textContent=$('branchColor').value};$('applyBranchColorBtn').onclick=branchColor;$('lockBtn').onclick=toggleLockSel;$('collapseBtn').onclick=toggleCollapseSel;$('duplicateBtnPanel').onclick=duplicateSel;$('deleteBtnPanel').onclick=deleteSel;$('multiGroupBtn').onclick=groupSel;$('multiUngroupBtn').onclick=ungroupSel;$('multiCopyBtn').onclick=copySel;$('multiDeleteBtn').onclick=deleteSel;$('lineTypeSelect').onchange=()=>updateEdge('type',$('lineTypeSelect').value);$('lineColor').oninput=()=>{$('lineColorText').textContent=$('lineColor').value;updateEdge('color',$('lineColor').value)};$('deleteLineBtn').onclick=deleteSel;
 viewport.addEventListener('pointerdown',ev=>{let panel=ev.target.closest&&ev.target.closest('.topbar,.inspector,.context-menu,.mini-map'),node=ev.target.closest&&ev.target.closest('.node'),edge=ev.target.classList&&ev.target.classList.contains('edge');if(panel||node||edge)return;hideMenu();clearSel();startPan(ev)});viewport.addEventListener('contextmenu',ev=>{let node=ev.target.closest&&ev.target.closest('.node'),edge=ev.target.classList&&ev.target.classList.contains('edge'),panel=ev.target.closest&&ev.target.closest('.topbar,.inspector,.mini-map');if(node||edge||panel)return;ev.preventDefault();let p=screenToWorld(ev.clientX,ev.clientY);showMenu(ev.clientX,ev.clientY,[{label:'Add Root Here',action:()=>addRootAt(p)},{label:'Paste Here',action:()=>{if(!appClipboard)return;pasteSel();let ns=selNodes();if(ns.length){let mx=Math.min(...ns.map(n=>n.x)),my=Math.min(...ns.map(n=>n.y));ns.forEach(n=>{n.x+=p.x-mx;n.y+=p.y-my});changed();render()}}},'separator',{label:snapEnabled?'Turn Snap Off':'Turn Snap On',action:()=>{snapEnabled=!snapEnabled;$('snapBtn').classList.toggle('active',snapEnabled)}},{label:'Fit to Screen',action:fit},{label:'Presentation Mode',action:present}])});viewport.addEventListener('pointermove',ev=>{if(draggingResize){let n=getNode(draggingResize.id);if(n&&!n.locked){let nw=Math.max(40,draggingResize.w+(ev.clientX-draggingResize.startX)/view.scale),nh=Math.max(24,draggingResize.h+(ev.clientY-draggingResize.startY)/view.scale);if(snapEnabled){nw=Math.round(nw/24)*24;nh=Math.round(nh/24)*24}n.width=nw;n.height=nh;didMoveNode=true;render()}return}if(draggingNode){let dx=(ev.clientX-draggingNode.offsetX)/view.scale,dy=(ev.clientY-draggingNode.offsetY)/view.scale;if(Math.abs(dx)>1||Math.abs(dy)>1)didMoveNode=true;draggingNode.starts.forEach(st=>{let n=getNode(st.id);if(!n||n.locked)return;let x=st.x+dx,y=st.y+dy;if(snapEnabled){x=Math.round(x/24)*24;y=Math.round(y/24)*24}n.x=x;n.y=y});render();return}if(draggingViewport){view.x=dragStart.vx+(ev.clientX-dragStart.x);view.y=dragStart.vy+(ev.clientY-dragStart.y);applyView()}if(draggingMiniMap)panMini(ev.clientX,ev.clientY)});viewport.addEventListener('pointerup',()=>{if((draggingNode||draggingResize)&&didMoveNode&&beforeDragSnapshot){undoStack.push(beforeDragSnapshot);if(undoStack.length>200)undoStack.shift();redoStack=[];changed()}draggingNode=null;draggingResize=null;beforeDragSnapshot=null;didMoveNode=false;draggingViewport=false;draggingMiniMap=false;viewport.classList.remove('panning')});viewport.addEventListener('pointercancel',()=>{draggingNode=null;draggingResize=null;beforeDragSnapshot=null;didMoveNode=false;draggingViewport=false;draggingMiniMap=false;viewport.classList.remove('panning')});viewport.addEventListener('wheel',ev=>{ev.preventDefault();setZoom(view.scale*(ev.deltaY<0?1.12:.88),ev.clientX,ev.clientY)},{passive:false});$('miniCanvas').addEventListener('pointerdown',ev=>{ev.stopPropagation();draggingMiniMap=true;panMini(ev.clientX,ev.clientY);$('miniCanvas').setPointerCapture(ev.pointerId)});$('miniCanvas').addEventListener('pointermove',ev=>{if(draggingMiniMap)panMini(ev.clientX,ev.clientY)});$('miniCanvas').addEventListener('pointerup',()=>draggingMiniMap=false);
 document.addEventListener('click',ev=>{if(!ev.target.closest('.menu-wrap'))closeMenus();if(!ev.target.closest('.context-menu'))hideMenu()});document.addEventListener('keydown',ev=>{let a=document.activeElement,tag=a.tagName?a.tagName.toLowerCase():'',editing=a.isContentEditable||tag==='input'||tag==='textarea'||tag==='select';if(ev.key==='Escape'){hideMenu();closeMenus();closeModals();if(document.body.classList.contains('presentation'))exitPresent();if(connectMode){connectMode=false;connectSourceId=null;$('connectBtn').classList.remove('active');render()}return}if(editing)return;if(ev.key==='Delete'||ev.key==='Backspace'){ev.preventDefault();deleteSel()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='z'){ev.preventDefault();ev.shiftKey?redo():undo()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='y'){ev.preventDefault();redo()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='c'){ev.preventDefault();copySel()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='v'){ev.preventDefault();pasteSel()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='d'){ev.preventDefault();duplicateSel()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='s'){ev.preventDefault();saveFile()}if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='f'){ev.preventDefault();$('searchInput').focus()}});document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)document.body.classList.remove('presentation')});
@@ -93,332 +93,180 @@ if (typeof status === "function") {
 <script src="firebase-config.js"></script>
 
 <script>
-/* ================= FIREBASE MULTI-USER ADD-ON ================= */
+/*********************************************************
+ * NODEMAPS — FIREBASE ONLY CLEAN CORE
+ *********************************************************/
 
-const NODEMAPS_PROJECT_ID = new URLSearchParams(window.location.search).get("id");
-const collabDb = firebase.firestore();
+const $ = id => document.getElementById(id);
 
-let collabCurrentUser = null;
-let collabRemoteApplying = false;
-let collabSaveTimer = null;
-let collabLocks = {};
-let collabRoles = {};
-let collabOwner = null;
+/* ================= DOM ================= */
 
-if (!NODEMAPS_PROJECT_ID) {
-  alert("Project ID missing. Open this editor from dashboard project card.");
-  window.location.href = "dashboard.html";
+const viewport = $('viewport');
+const world = $('world');
+const svg = $('svg');
+const nodesLayer = $('nodesLayer');
+const statusEl = $('status');
+const zoomLabel = $('zoomLabel');
+
+/* ================= STATE ================= */
+
+let state = {
+  nodes: [],
+  edges: []
+};
+
+let view = { x: 90, y: 100, scale: 1 };
+
+let selectedNodes = new Set();
+let selectedEdge = null;
+
+let undoStack = [];
+let redoStack = [];
+
+/* ================= FIREBASE ================= */
+
+const projectId = new URLSearchParams(location.search).get("id");
+
+let db = firebase.firestore();
+let currentUser = null;
+let saveTimer = null;
+let remoteLock = false;
+
+/* ================= CORE ================= */
+
+function snapshot(){
+  undoStack.push(JSON.parse(JSON.stringify(state)));
+  if(undoStack.length > 200) undoStack.shift();
+  redoStack = [];
+}
+
+function changed(){
+  scheduleSave();
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToFirebase, 700);
+}
+
+/* ================= FIREBASE SAVE ================= */
+
+function saveToFirebase(){
+  if(!currentUser || remoteLock) return;
+
+  db.collection("projects").doc(projectId).set({
+    state,
+    view,
+    updatedAt: Date.now(),
+    updatedBy: currentUser.uid
+  }, { merge: true });
+}
+
+/* ================= FIREBASE LOAD ================= */
+
+function listenProject(){
+  db.collection("projects").doc(projectId)
+    .onSnapshot(doc => {
+      if(!doc.exists) return;
+
+      remoteLock = true;
+
+      const data = doc.data();
+
+      state = data.state || state;
+      view = data.view || view;
+
+      normalise();
+      render();
+
+      remoteLock = false;
+    });
 }
 
 /* ================= AUTH ================= */
 
 firebase.auth().onAuthStateChanged(async user => {
-  if (!user) {
-    window.location.href = "login.html";
+  if(!user){
+    location.href = "login.html";
     return;
   }
 
-  collabCurrentUser = user;
+  currentUser = user;
 
-  await collabJoinProject();
-  collabListenProject();
-  collabStartPresence();
-  collabListenPresence();
-  collabListenLocks();
-  collabPatchAutosave();
-  collabPatchEditingProtection();
-
-  if (typeof status === "function") {
-    status("Firebase collaboration connected.");
-  }
-});
-
-/* ================= PROJECT REF ================= */
-
-function collabProjectRef() {
-  return collabDb.collection("projects").doc(NODEMAPS_PROJECT_ID);
-}
-
-/* ================= JOIN PROJECT ================= */
-
-async function collabJoinProject() {
-  const ref = collabProjectRef();
-  const snap = await ref.get();
-  const data = snap.exists ? snap.data() : {};
-
-  collabOwner = data.owner || collabCurrentUser.uid;
-  collabRoles = data.roles || {};
-
-  let update = {
-    owner: collabOwner,
-    members: firebase.firestore.FieldValue.arrayUnion(collabCurrentUser.uid),
-    ["presence." + collabCurrentUser.uid]: {
-      uid: collabCurrentUser.uid,
-      name: collabCurrentUser.displayName || collabCurrentUser.email || "User",
-      email: collabCurrentUser.email || "",
+  await db.collection("projects").doc(projectId).set({
+    members: firebase.firestore.FieldValue.arrayUnion(user.uid),
+    [`presence.${user.uid}`]: {
+      name: user.displayName || user.email,
       online: true,
       lastSeen: Date.now()
     }
-  };
-
-  if (!collabRoles[collabCurrentUser.uid]) {
-    update["roles." + collabCurrentUser.uid] =
-      collabCurrentUser.uid === collabOwner ? "owner" : "editor";
-  }
-
-  if (!data.state) {
-    update.state = state;
-    update.view = view;
-    update.createdAt = Date.now();
-  }
-
-  await ref.set(update, { merge: true });
-}
-
-/* ================= LOAD PROJECT REALTIME ================= */
-
-function collabListenProject() {
-  collabProjectRef().onSnapshot(doc => {
-    if (!doc.exists) return;
-
-    const data = doc.data() || {};
-
-    collabOwner = data.owner || collabOwner;
-    collabRoles = data.roles || {};
-
-    if (data.kicked && data.kicked[collabCurrentUser.uid]) {
-      alert("You were removed from this project.");
-      window.location.href = "dashboard.html";
-      return;
-    }
-
-    if (data.state && data.updatedBy !== collabCurrentUser.uid) {
-      collabRemoteApplying = true;
-
-      state = data.state;
-      if (data.view) view = data.view;
-
-      if (typeof normalise === "function") normalise();
-      if (typeof render === "function") render();
-      if (typeof syncInspector === "function") syncInspector();
-
-      collabRemoteApplying = false;
-
-      if (typeof status === "function") {
-        status("Live update received.");
-      }
-    }
-
-    collabRenderUsers(data.presence || {}, data.roles || {});
-  });
-}
-
-/* ================= FIREBASE SAVE ================= */
-
-function collabSaveNow() {
-  if (!collabCurrentUser || collabRemoteApplying) return;
-
-  collabProjectRef().set({
-    state: state,
-    view: view,
-    updatedAt: Date.now(),
-    updatedBy: collabCurrentUser.uid,
-    updatedByName: collabCurrentUser.displayName || collabCurrentUser.email || "User"
   }, { merge: true });
+
+  listenProject();
+
+  status("Firebase connected ✔");
+});
+
+/* ================= BASIC HELPERS ================= */
+
+function getNode(id){
+  return state.nodes.find(n => n.id === id);
 }
 
-function collabSaveSoon() {
-  clearTimeout(collabSaveTimer);
-  collabSaveTimer = setTimeout(collabSaveNow, 250);
+function getEdge(id){
+  return state.edges.find(e => e.id === id);
 }
 
-/* This replaces old localStorage autosave */
-function collabPatchAutosave() {
-  window.autosave = function () {
-    collabSaveSoon();
-  };
-
-  try {
-    autosave = window.autosave;
-  } catch (e) {}
-
-  if ($("clearAutosaveBtn")) {
-    $("clearAutosaveBtn").onclick = () => {
-      localStorage.removeItem(STORAGE_KEY);
-      if (typeof status === "function") status("Old browser autosave cleared. Firebase save active.");
-    };
-  }
+function uid(prefix){
+  return prefix + Math.random().toString(36).slice(2,9);
 }
 
-/* ================= PRESENCE ================= */
+/* ================= NODE OPS ================= */
 
-function collabStartPresence() {
-  setInterval(() => {
-    if (!collabCurrentUser) return;
+function addRoot(){
+  snapshot();
 
-    collabProjectRef().set({
-      ["presence." + collabCurrentUser.uid + ".online"]: true,
-      ["presence." + collabCurrentUser.uid + ".lastSeen"]: Date.now()
-    }, { merge: true });
-  }, 5000);
+  const id = uid("n");
 
-  window.addEventListener("beforeunload", () => {
-    try {
-      collabProjectRef().set({
-        ["presence." + collabCurrentUser.uid + ".online"]: false,
-        ["presence." + collabCurrentUser.uid + ".lastSeen"]: Date.now()
-      }, { merge: true });
-    } catch (e) {}
-  });
-}
-
-function collabListenPresence() {
-  collabProjectRef().onSnapshot(doc => {
-    const data = doc.data() || {};
-    collabRenderUsers(data.presence || {}, data.roles || {});
-  });
-}
-
-/* ================= USERS PANEL ================= */
-
-function collabRenderUsers(users, roles) {
-  let box = document.getElementById("liveUsersBox");
-
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "liveUsersBox";
-    box.style = `
-      position:fixed;
-      right:14px;
-      top:250px;
-      width:260px;
-      max-height:320px;
-      overflow:auto;
-      background:var(--panel, white);
-      border:1px solid var(--border, #ddd);
-      border-radius:18px;
-      box-shadow:var(--shadow, 0 12px 32px rgba(15,23,42,.13));
-      padding:12px;
-      font-size:13px;
-      z-index:9999;
-    `;
-    document.body.appendChild(box);
-  }
-
-  const now = Date.now();
-  let html = `<b>Collaboration</b><br><br>`;
-
-  Object.keys(users).forEach(uid => {
-    const u = users[uid];
-    if (!u.online || now - (u.lastSeen || 0) > 30000) return;
-
-    const role = roles[uid] || (uid === collabOwner ? "owner" : "editor");
-
-    html += `
-      <div style="border:1px solid var(--border,#ddd);border-radius:10px;padding:7px;margin-bottom:6px;background:#fff">
-        <div><b>${u.name || "User"}</b></div>
-        <div style="color:var(--muted,#6b7280);font-size:12px">${role}</div>
-      </div>
-    `;
+  state.nodes.push({
+    id,
+    text: "New Idea",
+    x: 500,
+    y: 300,
+    width: 170,
+    height: 66,
+    bg: "#fff",
+    border: "#9aa7ff",
+    shape: "rounded",
+    locked: false
   });
 
-  box.innerHTML = html;
+  selectedNodes = new Set([id]);
+  changed();
+  render();
 }
 
-/* ================= SOFT LOCK ================= */
+/* ================= UPDATE STATE ================= */
 
-function collabLockNode(nodeId) {
-  if (!nodeId || !collabCurrentUser) return;
+function updateNode(id, key, value){
+  const n = getNode(id);
+  if(!n) return;
 
-  collabProjectRef().collection("locks").doc(nodeId).set({
-    nodeId: nodeId,
-    uid: collabCurrentUser.uid,
-    name: collabCurrentUser.displayName || collabCurrentUser.email || "User",
-    expiresAt: Date.now() + 15000,
-    updatedAt: Date.now()
-  }, { merge: true });
+  snapshot();
+  n[key] = value;
+  changed();
+  render();
 }
 
-function collabListenLocks() {
-  collabProjectRef().collection("locks").onSnapshot(snap => {
-    collabLocks = {};
-    const now = Date.now();
+/* ================= CLEAN INIT ================= */
 
-    snap.forEach(doc => {
-      const lock = doc.data();
-      if (lock.expiresAt > now) {
-        collabLocks[doc.id] = lock;
-      }
-    });
-
-    collabApplyLocks();
-  });
-
-  setInterval(collabCleanLocks, 5000);
+function init(){
+  normalise();
+  render();
+  status("Ready (Firebase mode)");
 }
 
-function collabCleanLocks() {
-  const now = Date.now();
-
-  Object.keys(collabLocks).forEach(id => {
-    if (collabLocks[id].expiresAt < now) {
-      collabProjectRef().collection("locks").doc(id).delete().catch(() => {});
-    }
-  });
-}
-
-function collabApplyLocks() {
-  document.querySelectorAll(".node[data-id]").forEach(node => {
-    const id = node.dataset.id;
-    const lock = collabLocks[id];
-
-    node.style.opacity = "1";
-    node.title = "";
-
-    if (lock && lock.uid !== collabCurrentUser.uid && lock.expiresAt > Date.now()) {
-      node.style.opacity = "0.45";
-      node.title = "Locked by " + (lock.name || "another user");
-    }
-  });
-}
-
-/* ================= EDIT PROTECTION ================= */
-
-function collabPatchEditingProtection() {
-  document.addEventListener("pointerdown", e => {
-    const node = e.target.closest && e.target.closest(".node[data-id]");
-    if (!node) return;
-
-    const id = node.dataset.id;
-    const lock = collabLocks[id];
-
-    if (lock && lock.uid !== collabCurrentUser.uid && lock.expiresAt > Date.now()) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof status === "function") {
-        status("Locked by " + (lock.name || "another user") + " for a few seconds.");
-      }
-      return;
-    }
-
-    collabLockNode(id);
-  }, true);
-}
-
-/* ================= ROLE / KICK FUNCTIONS ================= */
-
-function setRole(uid, role) {
-  collabProjectRef().set({
-    ["roles." + uid]: role
-  }, { merge: true });
-}
-
-function kickUser(uid) {
-  collabProjectRef().set({
-    ["kicked." + uid]: true,
-    members: firebase.firestore.FieldValue.arrayRemove(uid)
-  }, { merge: true });
-}
+init();
 </script>
 
 </body>

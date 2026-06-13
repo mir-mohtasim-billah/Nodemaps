@@ -1,51 +1,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS Editor</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Editor</title>
 </head>
 <body>
 
-<h3>Editor</h3>
+<h2>Editor</h2>
+
 <div id="canvas"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<div id="users"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
 <script>
 
-//////////////////////////////////////////////////////////////////
-// ✅ ONLY CHANGE (IMPORTANT FIX)
-//////////////////////////////////////////////////////////////////
-
 const projectId = new URLSearchParams(window.location.search).get("id");
 
-//////////////////////////////////////////////////////////////////
+let state = {nodes:[], edges:[]};
 
-auth.onAuthStateChanged(user => {
-  if(!user) window.location.href = "login.html";
+auth.onAuthStateChanged(user=>{
+  if(!user) window.location.href="login.html";
+
+  joinUser(user);
+
   listenProject();
+  liveLockCleaner();
 });
+
+/* ================= USERS ================= */
+
+function joinUser(user){
+  db.collection("projects").doc(projectId).update({
+    ["users."+user.uid]:{
+      name:user.displayName,
+      role:"editor",
+      online:true,
+      lastSeen:Date.now()
+    }
+  });
+}
+
+/* ================= LIVE PROJECT ================= */
 
 function listenProject(){
   db.collection("projects").doc(projectId)
-  .onSnapshot(doc => {
-    const data = doc.data();
-    render(data.state);
+  .onSnapshot(doc=>{
+    let data = doc.data();
+
+    if(data.state){
+      state = data.state;
+      render();
+    }
+
+    renderUsers(data.users);
   });
 }
 
-function saveState(state){
+/* ================= AUTO SAVE ================= */
+
+function updateState(){
   db.collection("projects").doc(projectId).update({
-    state: state
+    state:state
   });
 }
 
-function render(state){
-  console.log("Render mindmap here:", state);
+/* instant autosave */
+setInterval(()=>{
+  updateState();
+}, 2000);
+
+/* ================= LOCK SYSTEM ================= */
+
+function lockNode(nodeId){
+  db.collection("projects").doc(projectId).update({
+    ["locks."+nodeId]:{
+      uid:auth.currentUser.uid,
+      expiresAt:Date.now()+15000
+    }
+  });
+}
+
+/* auto unlock */
+function liveLockCleaner(){
+  setInterval(async ()=>{
+    let doc = await db.collection("projects").doc(projectId).get();
+    let locks = doc.data().locks || {};
+    let now = Date.now();
+
+    Object.keys(locks).forEach(id=>{
+      if(locks[id].expiresAt < now){
+        db.collection("projects").doc(projectId).update({
+          ["locks."+id]:firebase.firestore.FieldValue.delete()
+        });
+      }
+    });
+
+  },5000);
+}
+
+/* ================= USERS UI ================= */
+
+function renderUsers(users){
+  let html = "<h3>Active Users</h3>";
+
+  for(let id in users){
+    html += `<div>${users[id].name} (${users[id].role})</div>`;
+  }
+
+  document.getElementById("users").innerHTML = html;
+}
+
+/* ================= RENDER ================= */
+
+function render(){
+  document.getElementById("canvas").innerHTML =
+    "<pre>"+JSON.stringify(state,null,2)+"</pre>";
 }
 
 </script>

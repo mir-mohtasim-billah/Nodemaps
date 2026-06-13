@@ -2,15 +2,81 @@
 <html>
 <head>
   <title>NodeMAPS Dashboard</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial;
+      background:#f4f6fb;
+    }
+
+    .topbar{
+      background:white;
+      padding:15px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid #ddd;
+    }
+
+    .container{
+      padding:20px;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:14px;
+      padding:15px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.08);
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:scale(1.03);
+    }
+
+    .new-box{
+      background:linear-gradient(135deg,#4f63ff,#6c7bff);
+      color:white;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      font-size:20px;
+    }
+
+    button{
+      padding:10px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .logout{
+      background:red;
+      color:white;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Dashboard</h2>
-<button onclick="createProject()">+ New Project</button>
+<div class="topbar">
+  <h2>NodeMAPS</h2>
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
 
-<div id="projects"></div>
+<div class="container">
 
-<!-- Firebase COMPAT -->
+  <!-- CREATE NEW PROJECT BOX -->
+  <div class="card new-box" onclick="createProject()">
+    + Create New Project
+  </div>
+
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -18,49 +84,61 @@
 <script src="firebase-config.js"></script>
 
 <script>
-auth.onAuthStateChanged(user => {
-  if(!user) window.location.href = "login.html";
-  loadProjects(user.uid);
+
+auth.onAuthStateChanged(user=>{
+  if(!user) window.location.href="login.html";
+  loadProjects();
 });
 
 function createProject(){
-  const user = auth.currentUser;
-  if(!user) return;
-
-  const id = "p_" + Date.now();
+  let id = "p_" + Date.now();
 
   db.collection("projects").doc(id).set({
-    name: "Untitled Project",
-    owner: user.uid,
-    members: [user.uid],
-    createdAt: Date.now(),
-    state: { nodes: [], edges: [] }
+    name:"Untitled Project",
+    owner:auth.currentUser.uid,
+    members:[auth.currentUser.uid],
+    createdAt:Date.now()
+  }).then(()=>{
+    openProject(id);
   });
 }
 
-function loadProjects(uid){
+function loadProjects(){
   db.collection("projects")
-  .where("members","array-contains",uid)
-  .onSnapshot(snap => {
+  .where("members","array-contains",auth.currentUser.uid)
+  .onSnapshot(snap=>{
 
-    let html = "";
+    document.querySelectorAll(".project-card").forEach(e=>e.remove());
 
-    snap.forEach(doc => {
-      html += `
-        <div onclick="openProject('${doc.id}')">
-          <h3>${doc.data().name}</h3>
-        </div>
+    snap.forEach(doc=>{
+      let d = doc.data();
+
+      let div = document.createElement("div");
+      div.className="card project-card";
+      div.innerHTML=`
+        <h3>${d.name}</h3>
+        <small>Project ID: ${doc.id}</small>
       `;
+
+      div.onclick=()=>openProject(doc.id);
+
+      document.querySelector(".container").appendChild(div);
     });
 
-    document.getElementById("projects").innerHTML = html;
   });
 }
 
 function openProject(id){
-  localStorage.setItem("projectId", id);
-  window.location.href = "editor.html";
+  localStorage.setItem("projectId",id);
+  window.location.href="editor.html";
 }
+
+function logout(){
+  auth.signOut().then(()=>{
+    window.location.href="login.html";
+  });
+}
+
 </script>
 
 </body>

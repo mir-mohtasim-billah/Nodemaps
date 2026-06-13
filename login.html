@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NodeMAPS Login</title>
+  <title>Login NodeMAPS</title>
 </head>
-<body>
+<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial;background:#f4f6fb">
 
-<h1>NodeMAPS</h1>
-<button onclick="login()">Login with Google</button>
+<div style="background:white;padding:30px;border-radius:12px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.1)">
+  <h2>NodeMAPS</h2>
+  <p>Login to continue</p>
+  <button onclick="login()" style="padding:10px 20px;border:none;background:#4f63ff;color:white;border-radius:8px">
+    Login with Google
+  </button>
+</div>
 
-<!-- Firebase COMPAT CDN: ei 3 ta must be compat -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-
 <script src="firebase-config.js"></script>
 
 <script>
 function login(){
-  const provider = new firebase.auth.GoogleAuthProvider();
+  let provider = new firebase.auth.GoogleAuthProvider();
 
-  auth.signInWithPopup(provider)
-    .then(() => {
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      console.log(error);
-      alert(error.message);
-    });
+  auth.signInWithPopup(provider).then(()=>{
+    window.location.href="dashboard.html";
+  });
 }
 </script>
 

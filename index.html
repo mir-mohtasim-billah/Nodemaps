@@ -1,3 +1,2273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NodeMAPS — Visual Mind Mapping Workspace</title>
+
+<style>
+:root{
+  --font-ui: Arial, Helvetica, "Segoe UI", Roboto, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  --navy:#08111f;
+  --navy2:#0f172a;
+  --blue:#315df5;
+  --blue2:#4f63ff;
+  --purple:#7c3aed;
+  --pink:#ec4899;
+  --cyan:#14b8a6;
+  --orange:#ff8a2a;
+  --text:#071023;
+  --muted:#5f6f89;
+  --soft:#f4f7ff;
+  --card:#ffffff;
+  --border:#dfe6f1;
+  --shadow:0 24px 70px rgba(15,23,42,.12);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+/* IMPORTANT FONT FIX:
+   This stops text becoming random icon symbols on mobile/browser.
+   Keep normal readable text but still allow emojis. */
+body, button, input, textarea, select, a, p, span, div,
+h1, h2, h3, h4, h5, h6, strong, small{
+  font-family:var(--font-ui) !important;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:
+    radial-gradient(circle at top left, rgba(79,99,255,.13), transparent 34%),
+    radial-gradient(circle at top right, rgba(20,184,166,.12), transparent 32%),
+    #f5f7fc;
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+button{
+  font-family:inherit;
+}
+
+img,svg{
+  display:block;
+}
+
+.logo-svg{
+  width:42px;
+  height:42px;
+  flex:none;
+}
+
+/* NAVBAR */
+.navbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(226,232,240,.9);
+}
+
+.nav-inner{
+  max-width:1180px;
+  height:76px;
+  margin:auto;
+  padding:0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:23px;
+  font-weight:950;
+  color:#071023;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:28px;
+  color:#52627a;
+  font-size:15px;
+  font-weight:750;
+}
+
+.nav-links a:hover{
+  color:var(--blue);
+}
+
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.btn{
+  border:0;
+  cursor:pointer;
+  border-radius:14px;
+  padding:13px 20px;
+  font-weight:900;
+  font-size:15px;
+  transition:.25s ease;
+}
+
+.btn-login{
+  background:white;
+  color:#0f172a;
+  border:1px solid #d9e1ee;
+}
+
+.btn-login:hover{
+  color:var(--blue);
+  border-color:var(--blue);
+}
+
+.btn-primary{
+  color:white;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  box-shadow:0 14px 32px rgba(49,93,245,.28);
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 20px 40px rgba(49,93,245,.36);
+}
+
+.btn-secondary{
+  color:#0f172a;
+  background:white;
+  border:1px solid #d9e1ee;
+}
+
+.btn-secondary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 32px rgba(15,23,42,.08);
+}
+
+.btn-big{
+  padding:16px 24px;
+  border-radius:16px;
+}
+
+.mobile-toggle{
+  display:none;
+  background:white;
+  border:1px solid #d9e1ee;
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:20px;
+}
+
+/* HERO */
+.hero{
+  max-width:1180px;
+  margin:auto;
+  padding:76px 22px 42px;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.02fr .98fr;
+  gap:58px;
+  align-items:center;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:white;
+  border:1px solid #dfe7f2;
+  box-shadow:0 12px 30px rgba(15,23,42,.06);
+  color:#24324a;
+  padding:9px 14px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:850;
+  margin-bottom:24px;
+}
+
+.badge-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 0 5px rgba(34,197,94,.12);
+}
+
+.hero h1{
+  font-size:66px;
+  line-height:.98;
+  letter-spacing:-3.1px;
+  margin-bottom:22px;
+}
+
+.hero h1 span{
+  background:linear-gradient(135deg,var(--blue),var(--purple),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero-text{
+  color:#52627a;
+  font-size:19px;
+  line-height:1.75;
+  max-width:640px;
+  margin-bottom:30px;
+}
+
+.hero-actions{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:24px;
+}
+
+.trust-row{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  color:#52627a;
+  font-size:14px;
+  font-weight:750;
+}
+
+.avatar-stack{
+  display:flex;
+}
+
+.avatar{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:3px solid white;
+  margin-left:-7px;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+}
+
+.avatar:first-child{
+  margin-left:0;
+}
+
+.avatar:nth-child(2){
+  background:linear-gradient(135deg,#ff5b75,#ff8a2a);
+}
+
+.avatar:nth-child(3){
+  background:linear-gradient(135deg,#14b8a6,#0ea5e9);
+}
+
+.avatar:nth-child(4){
+  background:linear-gradient(135deg,#facc15,#ff8a2a);
+}
+
+/* HERO MOCKUP */
+.product-stage{
+  position:relative;
+  min-height:520px;
+}
+
+.glow{
+  position:absolute;
+  width:450px;
+  height:450px;
+  right:10px;
+  top:40px;
+  background:radial-gradient(circle, rgba(79,99,255,.25), transparent 65%);
+  filter:blur(16px);
+}
+
+.mock-window{
+  position:relative;
+  z-index:2;
+  background:white;
+  border:1px solid #dfe7f2;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transform:rotate(1.4deg);
+}
+
+.window-top{
+  height:48px;
+  background:white;
+  border-bottom:1px solid #e8eef6;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 16px;
+}
+
+.dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+}
+
+.red{background:#ff5f57;}
+.yellow{background:#ffbd2e;}
+.green{background:#28c840;}
+
+.window-url{
+  margin-left:14px;
+  height:26px;
+  flex:1;
+  border-radius:999px;
+  background:#f1f5f9;
+  color:#94a3b8;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  padding-left:16px;
+}
+
+.app-preview{
+  height:430px;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(rgba(99,102,241,.075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.075) 1px, transparent 1px),
+    #f8fafc;
+  background-size:34px 34px;
+}
+
+.preview-toolbar{
+  position:absolute;
+  top:18px;
+  left:18px;
+  right:18px;
+  height:56px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 12px;
+  background:rgba(255,255,255,.88);
+  border:1px solid #e2e8f0;
+  border-radius:17px;
+  backdrop-filter:blur(14px);
+  box-shadow:0 12px 30px rgba(15,23,42,.08);
+}
+
+.tool-pill{
+  height:32px;
+  padding:0 12px;
+  display:flex;
+  align-items:center;
+  border-radius:10px;
+  border:1px solid #e2e8f0;
+  background:white;
+  font-size:12px;
+  color:#334155;
+  font-weight:800;
+}
+
+.node{
+  position:absolute;
+  min-width:142px;
+  height:62px;
+  border-radius:22px;
+  background:white;
+  border:2px solid #8ea0ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:900;
+  box-shadow:0 14px 32px rgba(79,99,255,.14);
+}
+
+.node-main{
+  top:185px;
+  left:98px;
+}
+
+.node-research{
+  top:110px;
+  left:310px;
+  background:#eef0ff;
+  border-color:#7487ff;
+}
+
+.node-plan{
+  top:260px;
+  left:316px;
+  background:#fff7dc;
+  border-color:#f5b540;
+  transform:rotate(45deg);
+  width:132px;
+  height:132px;
+  border-radius:8px;
+}
+
+.node-plan span{
+  transform:rotate(-45deg);
+}
+
+.line{
+  position:absolute;
+  height:4px;
+  background:#64748b;
+  transform-origin:left center;
+  border-radius:999px;
+}
+
+.line1{
+  width:188px;
+  left:230px;
+  top:205px;
+  transform:rotate(-34deg);
+}
+
+.line2{
+  width:185px;
+  left:230px;
+  top:238px;
+  transform:rotate(34deg);
+}
+
+.mini-panel{
+  position:absolute;
+  right:22px;
+  bottom:22px;
+  width:160px;
+  height:120px;
+  background:white;
+  border:1px solid #e2e8f0;
+  border-radius:20px;
+  box-shadow:0 18px 42px rgba(15,23,42,.12);
+}
+
+.float-card{
+  position:absolute;
+  z-index:4;
+  background:white;
+  border:1px solid #e2e8f0;
+  border-radius:20px;
+  box-shadow:0 20px 45px rgba(15,23,42,.14);
+  padding:16px;
+}
+
+.float-card.one{
+  left:-32px;
+  bottom:74px;
+  width:210px;
+}
+
+.float-card.two{
+  right:-28px;
+  top:72px;
+  width:190px;
+}
+
+.float-title{
+  font-size:13px;
+  color:#64748b;
+  margin-bottom:8px;
+  font-weight:800;
+}
+
+.float-value{
+  font-size:25px;
+  font-weight:950;
+  color:#0f172a;
+}
+
+.progress{
+  margin-top:12px;
+  height:8px;
+  background:#e2e8f0;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress span{
+  display:block;
+  width:74%;
+  height:100%;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+}
+
+/* LOGO STRIP */
+.logo-strip{
+  max-width:1180px;
+  margin:0 auto;
+  padding:10px 22px 70px;
+}
+
+.strip-box{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:26px;
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  box-shadow:0 18px 50px rgba(15,23,42,.06);
+  flex-wrap:wrap;
+}
+
+.strip-text{
+  color:#52627a;
+  font-weight:850;
+}
+
+.logo-name{
+  color:#8a97ad;
+  font-weight:950;
+  font-size:16px;
+}
+
+/* GENERAL SECTION */
+.section{
+  max-width:1180px;
+  margin:auto;
+  padding:82px 22px;
+}
+
+.section-head{
+  max-width:760px;
+  margin:0 auto 48px;
+  text-align:center;
+}
+
+.kicker{
+  color:var(--blue);
+  font-weight:950;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-size:13px;
+  margin-bottom:14px;
+}
+
+.section-head h2{
+  font-size:44px;
+  line-height:1.1;
+  letter-spacing:-1.7px;
+  margin-bottom:18px;
+}
+
+.section-head p{
+  color:#52627a;
+  font-size:18px;
+  line-height:1.7;
+}
+
+/* BENTO FEATURES */
+.bento-features{
+  display:grid;
+  grid-template-columns:1.2fr .8fr 1fr;
+  gap:22px;
+}
+
+.bento-card{
+  background:rgba(255,255,255,.94);
+  border:1px solid #e4e9f2;
+  border-radius:30px;
+  padding:30px;
+  box-shadow:0 22px 55px rgba(15,23,42,.07);
+  position:relative;
+  overflow:hidden;
+  min-height:260px;
+}
+
+.bento-card.large{
+  grid-row:span 2;
+  min-height:542px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(79,99,255,.18), transparent 36%),
+    linear-gradient(180deg,#ffffff,#f7f9ff);
+}
+
+.bento-card.dark{
+  background:
+    radial-gradient(circle at top right, rgba(79,99,255,.38), transparent 38%),
+    linear-gradient(135deg,#0b1220,#16213d);
+  color:white;
+}
+
+.bento-card.dark p,
+.bento-card.dark .mini-stat span{
+  color:#cbd5e1;
+}
+
+.bento-icon{
+  width:58px;
+  height:58px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  background:#eef2ff;
+  margin-bottom:20px;
+}
+
+.bento-card h3{
+  font-size:23px;
+  margin-bottom:12px;
+  letter-spacing:-.5px;
+}
+
+.bento-card p{
+  color:#64748b;
+  line-height:1.75;
+  font-size:15.5px;
+}
+
+.feature-visual{
+  margin-top:36px;
+  height:245px;
+  border-radius:28px;
+  background:
+    linear-gradient(rgba(99,102,241,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.08) 1px, transparent 1px),
+    #f8fafc;
+  background-size:28px 28px;
+  border:1px solid #dfe7f2;
+  position:relative;
+  overflow:hidden;
+}
+
+.visual-node{
+  position:absolute;
+  height:44px;
+  min-width:105px;
+  border-radius:18px;
+  background:white;
+  border:2px solid #8093ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:850;
+  box-shadow:0 14px 26px rgba(79,99,255,.12);
+}
+
+.visual-line{
+  position:absolute;
+  height:3px;
+  background:#64748b;
+  border-radius:999px;
+  transform-origin:left center;
+}
+
+.v-line-1{
+  width:120px;
+  left:137px;
+  top:101px;
+  transform:rotate(-25deg);
+}
+
+.v-line-2{
+  width:130px;
+  left:137px;
+  top:132px;
+  transform:rotate(28deg);
+}
+
+.mini-stat{
+  margin-top:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px;
+  border-radius:18px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.mini-stat strong{
+  font-size:26px;
+}
+
+.mini-stat span{
+  font-size:13px;
+  color:#64748b;
+  font-weight:750;
+}
+
+/* PRODUCT EXPERIENCE */
+.showcase{
+  background:#0b1220;
+  color:white;
+  border-radius:38px;
+  padding:54px;
+  position:relative;
+  overflow:hidden;
+}
+
+.showcase:before{
+  content:"";
+  position:absolute;
+  width:500px;
+  height:500px;
+  right:-140px;
+  top:-180px;
+  background:radial-gradient(circle, rgba(79,99,255,.38), transparent 65%);
+}
+
+.showcase-grid{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:40px;
+  align-items:center;
+}
+
+.showcase h2{
+  font-size:43px;
+  line-height:1.1;
+  letter-spacing:-1.6px;
+  margin-bottom:18px;
+}
+
+.showcase p{
+  color:#cbd5e1;
+  font-size:17px;
+  line-height:1.8;
+  margin-bottom:24px;
+}
+
+.check-list{
+  display:grid;
+  gap:15px;
+}
+
+.check{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#e2e8f0;
+  font-weight:850;
+}
+
+.check span{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:rgba(34,197,94,.16);
+  color:#86efac;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.dashboard-card{
+  background:white;
+  border-radius:26px;
+  padding:12px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+
+.fake-dashboard{
+  background:#f4f7fb;
+  border-radius:20px;
+  overflow:hidden;
+  min-height:360px;
+  display:grid;
+  grid-template-columns:170px 1fr;
+}
+
+.fake-sidebar{
+  background:#0f172a;
+  padding:22px 18px;
+  color:white;
+}
+
+.fake-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:950;
+  margin-bottom:30px;
+}
+
+.fake-brand .mini-logo{
+  width:30px;
+}
+
+.side-item{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  font-size:13px;
+  color:#cbd5e1;
+}
+
+.side-item.active{
+  background:#27344f;
+  color:white;
+}
+
+.fake-main{
+  padding:22px;
+}
+
+.fake-title{
+  height:20px;
+  width:210px;
+  background:#0f172a;
+  border-radius:999px;
+  margin-bottom:12px;
+}
+
+.fake-sub{
+  height:12px;
+  width:260px;
+  background:#cbd5e1;
+  border-radius:999px;
+  margin-bottom:24px;
+}
+
+.fake-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.fake-card{
+  height:104px;
+  border-radius:18px;
+  background:white;
+  border:1px solid #e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  box-shadow:0 12px 30px rgba(15,23,42,.06);
+}
+
+.fake-table{
+  background:white;
+  border:1px solid #e2e8f0;
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.fake-row{
+  height:52px;
+  border-bottom:1px solid #edf2f7;
+  display:grid;
+  grid-template-columns:1.3fr .6fr .6fr;
+  align-items:center;
+  padding:0 18px;
+  gap:12px;
+}
+
+.fake-row:last-child{
+  border-bottom:0;
+}
+
+.skeleton{
+  height:11px;
+  border-radius:999px;
+  background:#dbe2ea;
+}
+
+/* WORKFLOW */
+.workflow-pro{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+}
+
+.workflow-line{
+  position:absolute;
+  top:66px;
+  left:90px;
+  right:90px;
+  height:3px;
+  background:linear-gradient(90deg,#4f63ff,#14b8a6,#ff8a2a);
+  z-index:0;
+  border-radius:999px;
+}
+
+.workflow-card{
+  position:relative;
+  z-index:2;
+  background:white;
+  border:1px solid #e4e9f2;
+  border-radius:30px;
+  padding:28px;
+  box-shadow:0 22px 55px rgba(15,23,42,.07);
+  min-height:240px;
+}
+
+.workflow-number{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#315df5,#7c3aed);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:950;
+  margin-bottom:28px;
+  box-shadow:0 14px 28px rgba(79,99,255,.25);
+}
+
+.workflow-card h3{
+  font-size:20px;
+  margin-bottom:12px;
+}
+
+.workflow-card p{
+  color:#64748b;
+  line-height:1.7;
+  font-size:15px;
+}
+
+.workflow-chip{
+  margin-top:18px;
+  display:inline-flex;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#eef2ff;
+  color:#315df5;
+  font-size:12px;
+  font-weight:950;
+}
+
+/* TEMPLATES */
+.templates-pro{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+
+.template-pro-card{
+  background:white;
+  border:1px solid #e4e9f2;
+  border-radius:30px;
+  overflow:hidden;
+  box-shadow:0 22px 55px rgba(15,23,42,.07);
+  transition:.25s ease;
+}
+
+.template-pro-card:hover{
+  transform:translateY(-7px);
+  box-shadow:0 30px 75px rgba(15,23,42,.13);
+}
+
+.template-top{
+  height:220px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid #e5eaf2;
+}
+
+.template-top.mind{
+  background:
+    radial-gradient(circle at center, rgba(79,99,255,.11), transparent 40%),
+    linear-gradient(rgba(99,102,241,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.08) 1px, transparent 1px),
+    #f8fafc;
+  background-size:auto,28px 28px,28px 28px;
+}
+
+.template-top.org{
+  background:
+    radial-gradient(circle at top, rgba(20,184,166,.13), transparent 40%),
+    #f6fffc;
+}
+
+.template-top.flow{
+  background:
+    radial-gradient(circle at right, rgba(255,138,42,.15), transparent 40%),
+    #fffaf3;
+}
+
+.tpl-node{
+  position:absolute;
+  min-width:88px;
+  height:38px;
+  border-radius:15px;
+  background:white;
+  border:2px solid #7f91ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:950;
+  box-shadow:0 12px 24px rgba(15,23,42,.08);
+}
+
+.tpl-line{
+  position:absolute;
+  height:3px;
+  background:#64748b;
+  border-radius:999px;
+  transform-origin:left center;
+}
+
+.tpl-diamond{
+  position:absolute;
+  width:78px;
+  height:78px;
+  background:#fff3c4;
+  border:2px solid #f5b540;
+  transform:rotate(45deg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:950;
+}
+
+.tpl-diamond span{
+  transform:rotate(-45deg);
+}
+
+.template-info{
+  padding:24px;
+}
+
+.template-info h3{
+  font-size:21px;
+  margin-bottom:10px;
+}
+
+.template-info p{
+  color:#64748b;
+  line-height:1.7;
+  margin-bottom:18px;
+}
+
+.template-tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.template-tags span{
+  background:#f1f5f9;
+  color:#475569;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:850;
+}
+
+/* TESTIMONIALS */
+.testimonials{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.quote-card{
+  background:white;
+  border:1px solid #e4e9f2;
+  border-radius:28px;
+  padding:28px;
+  box-shadow:0 22px 55px rgba(15,23,42,.07);
+}
+
+.quote-card p{
+  color:#475569;
+  line-height:1.8;
+  margin-bottom:22px;
+}
+
+.person{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.person-pic{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+}
+
+.person strong{
+  display:block;
+}
+
+.person small{
+  color:#64748b;
+}
+
+/* PRICING */
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.price-card{
+  background:white;
+  border:1px solid #e4e9f2;
+  border-radius:30px;
+  padding:30px;
+  box-shadow:0 22px 55px rgba(15,23,42,.07);
+  position:relative;
+}
+
+.price-card.popular{
+  border:2px solid var(--blue);
+  transform:scale(1.03);
+}
+
+.popular-badge{
+  position:absolute;
+  top:18px;
+  right:18px;
+  background:#eef2ff;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:950;
+  padding:7px 10px;
+  border-radius:999px;
+}
+
+.price-card h3{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+.price-card p{
+  color:#64748b;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+.price{
+  font-size:44px;
+  font-weight:950;
+  margin-bottom:20px;
+}
+
+.price small{
+  font-size:15px;
+  color:#64748b;
+  font-weight:800;
+}
+
+.price-list{
+  display:grid;
+  gap:13px;
+  margin-bottom:26px;
+}
+
+.price-list div{
+  color:#475569;
+  font-weight:800;
+}
+
+/* FAQ */
+.faq-wrap{
+  max-width:850px;
+  margin:auto;
+  display:grid;
+  gap:14px;
+}
+
+.faq-item{
+  background:white;
+  border:1px solid #e4e9f2;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 14px 36px rgba(15,23,42,.04);
+}
+
+.faq-q{
+  width:100%;
+  background:white;
+  border:0;
+  text-align:left;
+  padding:20px 22px;
+  font-size:17px;
+  font-weight:950;
+  color:#0f172a;
+  display:flex;
+  justify-content:space-between;
+  cursor:pointer;
+}
+
+.faq-a{
+  display:none;
+  padding:0 22px 20px;
+  color:#64748b;
+  line-height:1.7;
+}
+
+.faq-item.open .faq-a{
+  display:block;
+}
+
+/* FINAL CTA */
+.final-cta{
+  max-width:1180px;
+  margin:60px auto 0;
+  padding:0 22px 90px;
+}
+
+.cta-box{
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.18), transparent 30%),
+    linear-gradient(135deg,#0b1220,#111827 45%,#172554);
+  color:white;
+  border-radius:38px;
+  padding:58px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.cta-box h2{
+  font-size:46px;
+  line-height:1.1;
+  letter-spacing:-1.6px;
+  margin-bottom:16px;
+}
+
+.cta-box p{
+  color:#cbd5e1;
+  font-size:18px;
+  line-height:1.7;
+  max-width:680px;
+  margin:0 auto 28px;
+}
+
+/* FOOTER */
+.footer-pro{
+  background:#08111f;
+  color:white;
+  padding:72px 22px 28px;
+}
+
+.footer-pro-inner{
+  max-width:1180px;
+  margin:auto;
+}
+
+.footer-top-pro{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:36px;
+  padding-bottom:42px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.footer-logo-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-size:25px;
+  font-weight:950;
+  margin-bottom:18px;
+}
+
+.footer-logo-row .logo-svg{
+  width:48px;
+  height:48px;
+}
+
+.footer-pro p{
+  color:#9fb0c9;
+  line-height:1.8;
+  max-width:520px;
+}
+
+.newsletter-box{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:26px;
+  padding:24px;
+}
+
+.newsletter-box h3{
+  margin-bottom:10px;
+  font-size:22px;
+}
+
+.newsletter-form{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.newsletter-form input{
+  flex:1;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  color:white;
+  border-radius:14px;
+  padding:13px 15px;
+  outline:none;
+}
+
+.newsletter-form input::placeholder{
+  color:#94a3b8;
+}
+
+.footer-links-pro{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:28px;
+  padding:42px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.footer-links-pro h4{
+  color:white;
+  margin-bottom:16px;
+  font-size:15px;
+}
+
+.footer-links-pro a{
+  display:block;
+  color:#9fb0c9;
+  margin-bottom:11px;
+  font-size:14px;
+}
+
+.footer-links-pro a:hover{
+  color:white;
+}
+
+.footer-bottom-pro{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+  padding-top:24px;
+  color:#9fb0c9;
+  font-size:14px;
+}
+
+.social-row{
+  display:flex;
+  gap:10px;
+}
+
+.social-row a{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-weight:900;
+}
+
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(34,197,94,.12);
+  color:#86efac;
+  font-weight:850;
+  font-size:13px;
+  margin-top:18px;
+}
+
+.status-pill span{
+  width:8px;
+  height:8px;
+  background:#22c55e;
+  border-radius:50%;
+}
+
+/* REVEAL ANIMATION */
+.reveal{
+  opacity:0;
+  transform:translateY(26px);
+  transition:.7s ease;
+}
+
+.reveal.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .hero-grid,
+  .showcase-grid,
+  .footer-top-pro{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    font-size:52px;
+  }
+
+  .bento-features,
+  .templates-pro,
+  .workflow-pro,
+  .testimonials,
+  .pricing-grid,
+  .footer-links-pro{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .bento-card.large{
+    grid-row:auto;
+  }
+
+  .workflow-line{
+    display:none;
+  }
+}
+
+@media(max-width:760px){
+  .nav-inner{
+    height:68px;
+  }
+
+  .mobile-toggle{
+    display:block;
+  }
+
+  .nav-links{
+    position:absolute;
+    top:68px;
+    left:16px;
+    right:16px;
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:20px;
+    box-shadow:0 20px 55px rgba(15,23,42,.16);
+    padding:18px;
+    display:none;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .nav-links.show{
+    display:flex;
+  }
+
+  .nav-actions .btn-login{
+    display:none;
+  }
+
+  .hero{
+    padding-top:54px;
+  }
+
+  .hero h1{
+    font-size:42px;
+    letter-spacing:-2px;
+  }
+
+  .hero-text{
+    font-size:17px;
+  }
+
+  .mock-window{
+    transform:none;
+  }
+
+  .product-stage{
+    min-height:auto;
+  }
+
+  .float-card{
+    display:none;
+  }
+
+  .bento-features,
+  .templates-pro,
+  .workflow-pro,
+  .testimonials,
+  .pricing-grid,
+  .footer-links-pro{
+    grid-template-columns:1fr;
+  }
+
+  .showcase{
+    padding:30px;
+    border-radius:28px;
+  }
+
+  .showcase h2,
+  .section-head h2,
+  .cta-box h2{
+    font-size:34px;
+  }
+
+  .fake-dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .fake-sidebar{
+    display:none;
+  }
+
+  .price-card.popular{
+    transform:none;
+  }
+
+  .newsletter-form{
+    flex-direction:column;
+  }
+
+  .cta-box{
+    padding:38px 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="nav-inner">
+
+    <a href="#" class="brand">
+      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <line x1="48" y1="48" x2="25" y2="34" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+        <line x1="48" y1="48" x2="72" y2="25" stroke="#ec4899" stroke-width="8" stroke-linecap="round"/>
+        <line x1="48" y1="48" x2="77" y2="64" stroke="#fb923c" stroke-width="8" stroke-linecap="round"/>
+        <line x1="48" y1="48" x2="38" y2="75" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="48" cy="48" r="15" fill="#7c3aed"/>
+        <circle cx="25" cy="34" r="9" fill="#0ea5e9"/>
+        <circle cx="72" cy="25" r="11" fill="#ff4f81"/>
+        <circle cx="77" cy="64" r="10" fill="#ff8a2a"/>
+        <circle cx="38" cy="75" r="10" fill="#14b8a6"/>
+        <circle cx="16" cy="52" r="5" fill="#38bdf8"/>
+        <circle cx="61" cy="78" r="4" fill="#a855f7"/>
+      </svg>
+      NodeMAPS
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#product">Product</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#templates">Templates</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="btn btn-login" onclick="goLogin()">Login</button>
+      <button class="btn btn-primary" onclick="goLogin()">Start Free</button>
+      <button class="mobile-toggle" onclick="toggleMenu()">☰</button>
+    </div>
+
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid">
+
+    <div class="reveal">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Visual workspace for ideas, planning and teamwork
+      </div>
+
+      <h1>Map your ideas with <span>NodeMAPS</span></h1>
+
+      <p class="hero-text">
+        Create beautiful mind maps, organize projects, collaborate with others, and turn scattered ideas into clean visual plans — all inside one modern workspace.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-big" onclick="goLogin()">
+          Start mapping free
+        </button>
+        <button class="btn btn-secondary btn-big" onclick="document.querySelector('#product').scrollIntoView()">
+          See how it works
+        </button>
+      </div>
+
+      <div class="trust-row">
+        <div class="avatar-stack">
+          <span class="avatar"></span>
+          <span class="avatar"></span>
+          <span class="avatar"></span>
+          <span class="avatar"></span>
+        </div>
+        <strong>Built for brainstorming, study notes, product planning and team projects.</strong>
+      </div>
+    </div>
+
+    <div class="product-stage reveal">
+      <div class="glow"></div>
+
+      <div class="mock-window">
+        <div class="window-top">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <div class="window-url">nodemaps.app/workspace</div>
+        </div>
+
+        <div class="app-preview">
+          <div class="preview-toolbar">
+            <div class="tool-pill">Add Root</div>
+            <div class="tool-pill">Add Child</div>
+            <div class="tool-pill">Connect</div>
+            <div class="tool-pill">Auto Layout</div>
+          </div>
+
+          <div class="line line1"></div>
+          <div class="line line2"></div>
+
+          <div class="node node-main">💡 Main Idea</div>
+          <div class="node node-research">📚 Research</div>
+          <div class="node node-plan"><span>⚠️ Decision</span></div>
+
+          <div class="mini-panel"></div>
+        </div>
+      </div>
+
+      <div class="float-card one">
+        <div class="float-title">Projects created</div>
+        <div class="float-value">12.8k+</div>
+        <div class="progress"><span></span></div>
+      </div>
+
+      <div class="float-card two">
+        <div class="float-title">Live collaboration</div>
+        <div class="float-value">Real-time</div>
+        <div class="progress"><span></span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="logo-strip reveal">
+  <div class="strip-box">
+    <div class="strip-text">Perfect for workflows inspired by</div>
+    <div class="logo-name">Miro-style canvas</div>
+    <div class="logo-name">Figma-like collaboration</div>
+    <div class="logo-name">Notion-style organization</div>
+    <div class="logo-name">Google Drive-like folders</div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-head reveal">
+    <div class="kicker">Features</div>
+    <h2>Everything your mind map app needs</h2>
+    <p>
+      A complete visual workspace with fast editing, project organization, sharing, styling and cloud-ready SaaS experience.
+    </p>
+  </div>
+
+  <div class="bento-features reveal">
+
+    <div class="bento-card large">
+      <div class="bento-icon">🧠</div>
+      <h3>Visual mind mapping canvas</h3>
+      <p>
+        Build ideas using root nodes, child nodes, custom shapes, decision boxes, connectors and a clean grid workspace.
+      </p>
+
+      <div class="feature-visual">
+        <div class="visual-line v-line-1"></div>
+        <div class="visual-line v-line-2"></div>
+
+        <div class="visual-node" style="top:100px;left:35px;">💡 Main Idea</div>
+        <div class="visual-node" style="top:50px;right:38px;">📚 Research</div>
+        <div class="visual-node" style="bottom:48px;right:42px;background:#fff7dc;border-color:#f5b540;">⚠️ Decision</div>
+      </div>
+    </div>
+
+    <div class="bento-card dark">
+      <div class="bento-icon">⚡</div>
+      <h3>Fast editing tools</h3>
+      <p>
+        Add nodes, connect ideas, zoom, search, arrange and style your map without breaking the creative flow.
+      </p>
+
+      <div class="mini-stat">
+        <div>
+          <strong>2x</strong><br>
+          <span>Faster planning</span>
+        </div>
+        <div>🚀</div>
+      </div>
+    </div>
+
+    <div class="bento-card">
+      <div class="bento-icon">👥</div>
+      <h3>Invite and collaborate</h3>
+      <p>
+        Add users, share project codes and build shared workspaces for group projects, teams and study planning.
+      </p>
+    </div>
+
+    <div class="bento-card">
+      <div class="bento-icon">📁</div>
+      <h3>Folders and project control</h3>
+      <p>
+        Organize maps using folders, favorites, shared projects, trash, search and a clean dashboard.
+      </p>
+    </div>
+
+    <div class="bento-card dark">
+      <div class="bento-icon">🎨</div>
+      <h3>Advanced node styling</h3>
+      <p>
+        Customize fill color, border, icons, shape, font size and node size from the style panel.
+      </p>
+
+      <div class="mini-stat">
+        <div>
+          <strong>6+</strong><br>
+          <span>Style controls</span>
+        </div>
+        <div>✨</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="product">
+  <div class="showcase reveal">
+    <div class="showcase-grid">
+
+      <div>
+        <div class="kicker">Product Experience</div>
+        <h2>A dashboard that feels like a real workspace</h2>
+        <p>
+          Your homepage dashboard already has a strong SaaS feeling. This landing page continues the same visual language: dark sidebar, blue action buttons, white cards and clean project organization.
+        </p>
+
+        <div class="check-list">
+          <div class="check"><span>✓</span> Clean home dashboard preview</div>
+          <div class="check"><span>✓</span> Modern mind map canvas section</div>
+          <div class="check"><span>✓</span> Login button connected to your app</div>
+          <div class="check"><span>✓</span> Professional footer like SaaS websites</div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="fake-dashboard">
+          <div class="fake-sidebar">
+            <div class="fake-brand">
+              <svg class="mini-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <line x1="48" y1="48" x2="25" y2="34" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+                <line x1="48" y1="48" x2="72" y2="25" stroke="#ec4899" stroke-width="8" stroke-linecap="round"/>
+                <line x1="48" y1="48" x2="77" y2="64" stroke="#fb923c" stroke-width="8" stroke-linecap="round"/>
+                <line x1="48" y1="48" x2="38" y2="75" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="48" cy="48" r="15" fill="#7c3aed"/>
+                <circle cx="25" cy="34" r="9" fill="#0ea5e9"/>
+                <circle cx="72" cy="25" r="11" fill="#ff4f81"/>
+                <circle cx="77" cy="64" r="10" fill="#ff8a2a"/>
+                <circle cx="38" cy="75" r="10" fill="#14b8a6"/>
+              </svg>
+              NodeMAPS
+            </div>
+
+            <div class="side-item active">🏠 Home</div>
+            <div class="side-item">⭐ Favorites</div>
+            <div class="side-item">👥 Shared with me</div>
+            <div class="side-item">🗑 Trash</div>
+          </div>
+
+          <div class="fake-main">
+            <div class="fake-title"></div>
+            <div class="fake-sub"></div>
+
+            <div class="fake-cards">
+              <div class="fake-card">＋</div>
+              <div class="fake-card">🧠</div>
+              <div class="fake-card">🏗️</div>
+            </div>
+
+            <div class="fake-table">
+              <div class="fake-row">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+              </div>
+              <div class="fake-row">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+              </div>
+              <div class="fake-row">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="workflow">
+  <div class="section-head reveal">
+    <div class="kicker">Workflow</div>
+    <h2>From quick thought to clear visual system</h2>
+    <p>
+      NodeMAPS guides users from the first idea to an organized map, shared workspace and presentation-ready structure.
+    </p>
+  </div>
+
+  <div class="workflow-pro reveal">
+    <div class="workflow-line"></div>
+
+    <div class="workflow-card">
+      <div class="workflow-number">1</div>
+      <h3>Start with a template</h3>
+      <p>Choose Blank Map, Mind Map or Org Chart and instantly open a clean workspace.</p>
+      <div class="workflow-chip">Start fast</div>
+    </div>
+
+    <div class="workflow-card">
+      <div class="workflow-number">2</div>
+      <h3>Build your structure</h3>
+      <p>Add root ideas, child nodes, text blocks, decision boxes and visual connections.</p>
+      <div class="workflow-chip">Create nodes</div>
+    </div>
+
+    <div class="workflow-card">
+      <div class="workflow-number">3</div>
+      <h3>Style and organize</h3>
+      <p>Use colors, icons, shapes, folders, favorites and search to keep everything clean.</p>
+      <div class="workflow-chip">Make it clear</div>
+    </div>
+
+    <div class="workflow-card">
+      <div class="workflow-number">4</div>
+      <h3>Share and present</h3>
+      <p>Invite users, join projects, present your map and continue working from anywhere.</p>
+      <div class="workflow-chip">Work together</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="templates">
+  <div class="section-head reveal">
+    <div class="kicker">Templates</div>
+    <h2>Different layouts for different thinking styles</h2>
+    <p>
+      Each template feels unique, so users do not think every preview is the same design repeated.
+    </p>
+  </div>
+
+  <div class="templates-pro reveal">
+
+    <div class="template-pro-card">
+      <div class="template-top mind">
+        <div class="tpl-line" style="width:105px;left:113px;top:103px;transform:rotate(-25deg);"></div>
+        <div class="tpl-line" style="width:105px;left:113px;top:123px;transform:rotate(25deg);"></div>
+        <div class="tpl-node" style="top:90px;left:28px;">Main</div>
+        <div class="tpl-node" style="top:48px;right:38px;">Idea 1</div>
+        <div class="tpl-node" style="bottom:48px;right:38px;">Idea 2</div>
+      </div>
+
+      <div class="template-info">
+        <h3>Mind Map</h3>
+        <p>Best for brainstorming, study notes, research planning and visual thinking.</p>
+        <div class="template-tags">
+          <span>Study</span>
+          <span>Brainstorm</span>
+          <span>Notes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-pro-card">
+      <div class="template-top org">
+        <div class="tpl-line" style="width:3px;height:50px;left:50%;top:70px;"></div>
+        <div class="tpl-line" style="width:175px;left:72px;top:120px;"></div>
+        <div class="tpl-line" style="width:3px;height:35px;left:72px;top:120px;"></div>
+        <div class="tpl-line" style="width:3px;height:35px;right:72px;top:120px;"></div>
+        <div class="tpl-node" style="top:35px;left:50%;transform:translateX(-50%);border-color:#14b8a6;">CEO</div>
+        <div class="tpl-node" style="bottom:45px;left:28px;border-color:#14b8a6;">Team A</div>
+        <div class="tpl-node" style="bottom:45px;right:28px;border-color:#14b8a6;">Team B</div>
+      </div>
+
+      <div class="template-info">
+        <h3>Org Chart</h3>
+        <p>Perfect for company structure, department planning and team hierarchy.</p>
+        <div class="template-tags">
+          <span>Company</span>
+          <span>Team</span>
+          <span>Roles</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-pro-card">
+      <div class="template-top flow">
+        <div class="tpl-line" style="width:70px;left:82px;top:106px;"></div>
+        <div class="tpl-line" style="width:70px;right:82px;top:106px;"></div>
+        <div class="tpl-node" style="top:88px;left:24px;border-color:#ff8a2a;">Start</div>
+        <div class="tpl-diamond" style="top:70px;left:50%;margin-left:-39px;"><span>Decide</span></div>
+        <div class="tpl-node" style="top:88px;right:24px;border-color:#ff8a2a;">Done</div>
+      </div>
+
+      <div class="template-info">
+        <h3>Flow Plan</h3>
+        <p>Useful for processes, decisions, user journeys and project workflows.</p>
+        <div class="template-tags">
+          <span>Process</span>
+          <span>Decision</span>
+          <span>Flow</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head reveal">
+    <div class="kicker">Loved by builders</div>
+    <h2>Made for people who think visually</h2>
+    <p>Use this section to make the website feel trustworthy, clean and real.</p>
+  </div>
+
+  <div class="testimonials reveal">
+
+    <div class="quote-card">
+      <p>“NodeMAPS makes planning easier because I can see my ideas clearly instead of writing everything in long notes.”</p>
+      <div class="person">
+        <div class="person-pic"></div>
+        <div>
+          <strong>Student user</strong>
+          <small>Research planning</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-card">
+      <p>“The dashboard feels clean, and the folder system makes project management simple.”</p>
+      <div class="person">
+        <div class="person-pic"></div>
+        <div>
+          <strong>Team lead</strong>
+          <small>Project workspace</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-card">
+      <p>“It feels like a lightweight visual workspace for brainstorming, diagrams and quick planning.”</p>
+      <div class="person">
+        <div class="person-pic"></div>
+        <div>
+          <strong>Creator</strong>
+          <small>Idea mapping</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-head reveal">
+    <div class="kicker">Pricing</div>
+    <h2>Simple plans for every user</h2>
+    <p>You can edit these prices later. This section makes your website look more like a real SaaS product.</p>
+  </div>
+
+  <div class="pricing-grid reveal">
+
+    <div class="price-card">
+      <h3>Free</h3>
+      <p>For personal ideas and testing NodeMAPS.</p>
+      <div class="price">$0 <small>/month</small></div>
+      <div class="price-list">
+        <div>✓ 3 projects</div>
+        <div>✓ Basic mind maps</div>
+        <div>✓ Dashboard access</div>
+        <div>✓ Manual save</div>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;" onclick="goLogin()">Get Started</button>
+    </div>
+
+    <div class="price-card popular">
+      <div class="popular-badge">Popular</div>
+      <h3>Pro</h3>
+      <p>For students, creators and regular users.</p>
+      <div class="price">$8 <small>/month</small></div>
+      <div class="price-list">
+        <div>✓ Unlimited projects</div>
+        <div>✓ Folders and favorites</div>
+        <div>✓ Advanced node styles</div>
+        <div>✓ Project sharing</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="goLogin()">Start Pro</button>
+    </div>
+
+    <div class="price-card">
+      <h3>Team</h3>
+      <p>For teams and organizations working together.</p>
+      <div class="price">$19 <small>/month</small></div>
+      <div class="price-list">
+        <div>✓ Team workspace</div>
+        <div>✓ Invite users</div>
+        <div>✓ Shared projects</div>
+        <div>✓ Priority support</div>
+      </div>
+      <button class="btn btn-secondary" style="width:100%;" onclick="goLogin()">Contact Sales</button>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="section-head reveal">
+    <div class="kicker">FAQ</div>
+    <h2>Questions users may ask</h2>
+    <p>
+      A bigger FAQ makes the landing page feel more complete, reliable and ready for real users.
+    </p>
+  </div>
+
+  <div class="faq-wrap reveal">
+
+    <div class="faq-item open">
+      <button class="faq-q">What is NodeMAPS? <span>+</span></button>
+      <div class="faq-a">
+        NodeMAPS is a visual mind mapping workspace where users can create, organize and share ideas using nodes, connections, folders and templates.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Can I use NodeMAPS for study notes? <span>+</span></button>
+      <div class="faq-a">
+        Yes. It is useful for study notes, research planning, class topics, presentation preparation and exam revision.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Can teams work together inside one project? <span>+</span></button>
+      <div class="faq-a">
+        Yes. Users can invite others, share projects and join using project codes depending on your app permission system.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Does NodeMAPS have folders and favorites? <span>+</span></button>
+      <div class="faq-a">
+        Yes. The dashboard supports folders, favorites, shared projects, trash and search so users can organize maps like a real workspace.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Can I customize node colors and shapes? <span>+</span></button>
+      <div class="faq-a">
+        Yes. Users can change node text, emoji, shape, fill color, border color, font size and node size from the style panel.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Is NodeMAPS similar to Miro or Figma? <span>+</span></button>
+      <div class="faq-a">
+        NodeMAPS is inspired by modern visual workspaces, but focused mainly on simple mind mapping, project organization and clean visual planning.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Where does the login button go? <span>+</span></button>
+      <div class="faq-a">
+        The login button currently goes to login.html. Change that link if your real login file has another name.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q">Can I use NodeMAPS on mobile? <span>+</span></button>
+      <div class="faq-a">
+        The landing page is responsive. Your actual editor also needs mobile canvas optimization for the best experience.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="cta-box reveal">
+    <h2>Ready to organize your next big idea?</h2>
+    <p>
+      Start with a blank map, build your structure, connect your thinking and turn ideas into something clear.
+    </p>
+    <button class="btn btn-primary btn-big" onclick="goLogin()">
+      Open NodeMAPS
+    </button>
+  </div>
+</section>
+
+<footer class="footer-pro">
+  <div class="footer-pro-inner">
+
+    <div class="footer-top-pro">
+      <div>
+        <div class="footer-logo-row">
+          <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <line x1="48" y1="48" x2="25" y2="34" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+            <line x1="48" y1="48" x2="72" y2="25" stroke="#ec4899" stroke-width="8" stroke-linecap="round"/>
+            <line x1="48" y1="48" x2="77" y2="64" stroke="#fb923c" stroke-width="8" stroke-linecap="round"/>
+            <line x1="48" y1="48" x2="38" y2="75" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="48" cy="48" r="15" fill="#7c3aed"/>
+            <circle cx="25" cy="34" r="9" fill="#0ea5e9"/>
+            <circle cx="72" cy="25" r="11" fill="#ff4f81"/>
+            <circle cx="77" cy="64" r="10" fill="#ff8a2a"/>
+            <circle cx="38" cy="75" r="10" fill="#14b8a6"/>
+          </svg>
+          NodeMAPS
+        </div>
+
+        <p>
+          A modern visual workspace for mind maps, brainstorming, org charts, project planning and collaborative thinking.
+        </p>
+
+        <div class="status-pill">
+          <span></span>
+          All systems running
+        </div>
+      </div>
+
+      <div class="newsletter-box">
+        <h3>Stay updated</h3>
+        <p>Get product updates, new templates and feature releases from NodeMAPS.</p>
+
+        <div class="newsletter-form">
+          <input type="email" placeholder="Enter your email">
+          <button class="btn btn-primary">Subscribe</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-links-pro">
+
+      <div>
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#templates">Templates</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Changelog</a>
+        <a href="#">Roadmap</a>
+      </div>
+
+      <div>
+        <h4>Use Cases</h4>
+        <a href="#">Mind Mapping</a>
+        <a href="#">Study Notes</a>
+        <a href="#">Org Chart</a>
+        <a href="#">Project Planning</a>
+        <a href="#">Brainstorming</a>
+      </div>
+
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Documentation</a>
+        <a href="#">Tutorials</a>
+        <a href="#">Blog</a>
+        <a href="#">Community</a>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <a href="#">Careers</a>
+        <a href="#">Support</a>
+        <a href="#">Partners</a>
+      </div>
+
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Security</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">Data Policy</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom-pro">
+      <div>© 2026 NodeMAPS. All rights reserved.</div>
+
+      <div class="social-row">
+        <a href="#">𝕏</a>
+        <a href="#">in</a>
+        <a href="#">▶</a>
+        <a href="#">◎</a>
+      </div>
+
+      <div>Made for visual thinkers.</div>
+    </div>
+
+  </div>
+</footer>
+
 <script>
-window.location.href = "login.html";
+function goLogin(){
+  window.location.href = "login.html";
+}
+
+function toggleMenu(){
+  document.getElementById("navLinks").classList.toggle("show");
+}
+
+document.querySelectorAll(".faq-q").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    btn.parentElement.classList.toggle("open");
+  });
+});
+
+const reveals = document.querySelectorAll(".reveal");
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+},{threshold:.12});
+
+reveals.forEach(item=>observer.observe(item));
 </script>
+
+</body>
+</html> 
